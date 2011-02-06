@@ -1,0 +1,12 @@
+darknrgy's 6WD Robot Project
+
+This is a six wheel drive robot project. The robot is intended to be controlled over the internet through a client written in wxpython and viewed through a webcam. The files tracked in git-hub are primarly source code for the AVR microcontroller used on the robot and various supporting applications. 
+
+** BLOG **
+http://darknrgy.typepad.com/darknrgys-blog/6wd-robot/
+
+** AVR PIN MAPPING DIAGRAM **
+https://spreadsheets.google.com/ccc?key=0Au1u0-7dgdmjdHpPVTUxZkNtekFmOFg5SFk3ZWNVR1E&hl=en&authkey=CMXCifAI
+
+** Additional Links and Resources related to the project **
+https://spreadsheets.google.com/ccc?key=0Au1u0-7dgdmjdGNRcmNrcERTck11NTJjd3R0eEsxZHc&hl=en&authkey=CPCMmoAO
