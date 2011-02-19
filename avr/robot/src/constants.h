@@ -7,11 +7,13 @@
 
 #define CMD_PWM_SET			0x10
 #define CMD_PWM_SETSCALAR	0x11
-
 #define CMD_RPM				0x20
-#define CMD_RPMSET				0x21
-
-
+#define CMD_RPMSET			0x21
 #define CMD_DEBUG16			0x30
+
+// ADC Channels
+#define MOTORDRIVER_TEMP	0x02
+#define BATTERY_VOLTAGE		0X01
+
 
 #endif

@@ -1,0 +1,2531 @@
+Usage: vlc [options] [stream] ...
+You can specify multiple streams on the commandline. They will be enqueued in the playlist.
+The first item specified will be played first.
+
+Options-styles:
+  --option  A global option that is set for the duration of the program.
+   -option  A single letter version of a global --option.
+   :option  An option that only applies to the stream directly before it
+            and that overrides previous settings.
+
+Stream MRL syntax:
+  [[access][/demux]://]URL[@[title][:chapter][-[title][:chapter]]] [:option=value ...]
+
+  Many of the global --options can also be used as MRL specific :options.
+  Multiple :option=value pairs can be specified.
+
+URL syntax:
+  [file://]filename              Plain media file
+  http://ip:port/file            HTTP URL
+  ftp://ip:port/file             FTP URL
+  mms://ip:port/file             MMS URL
+  screen://                      Screen capture
+  [dvd://][device][@raw_device]  DVD device
+  [vcd://][device]               VCD device
+  [cdda://][device]              Audio CD device
+  udp:[[<source address>]@[<bind address>][:<bind port>]]
+                                 UDP stream sent by a streaming server
+  vlc:pause:<seconds>            Special item to pause the playlist for a certain time
+  vlc:quit                       Special item to quit VLC
+
+ Audio
+      --audio, --no-audio        Enable audio (default enabled)
+          You can completely disable the audio output. The audio decoding stage will not take place, thus saving
+          some processing power. (default enabled)
+      --volume <integer>         Default audio volume
+          You can set the default audio output volume here, in a range from 0 to 1024.
+      --volume-step <integer>    Audio output volume step
+          The step size of the volume is adjustable using this option, in a range from 0 to 1024.
+      --aout-rate <integer>      Audio output frequency (Hz)
+          You can force the audio output frequency here. Common values are -1 (default), 48000, 44100, 32000,
+          22050, 16000, 11025, 8000.
+      --hq-resampling, --no-hq-resampling
+                                 High quality audio resampling (default enabled)
+          This uses a high quality audio resampling algorithm. High quality audio resampling can be processor
+          intensive so you can disable it and a cheaper resampling algorithm will be used instead. (default enabled)
+      --spdif, --no-spdif        Use S/PDIF when available (default disabled)
+          S/PDIF can be used by default when your hardware supports it as well as the audio stream being played.
+          (default disabled)
+      --force-dolby-surround {0 (Auto), 1 (On), 2 (Off)}
+                                 Force detection of Dolby Surround
+          Use this when you know your stream is (or is not) encoded with Dolby Surround but fails to be detected as
+          such. Even if the stream is not actually encoded with Dolby Surround, turning on this option might
+          enhance your experience, especially when combined with the Headphone Channel Mixer.
+      --audio-desync <integer>   Audio desynchronization compensation
+          This delays the audio output. The delay must be given in milliseconds.This can be handy if you notice a
+          lag between the video and the audio.
+      --aout <string>            Audio output module
+          This is the audio output method used by VLC. The default behavior is to automatically select the best
+          method available.
+      --audio-filter <string>    Audio filters
+          This adds audio post processing filters, to modify the sound rendering.
+      --audio-visual <string>    Audio visualizations 
+          This adds visualization modules (spectrum analyzer, etc.).
+
+ Video
+      --video, --no-video        Enable video (default enabled)
+          You can completely disable the video output. The video decoding stage will not take place, thus saving
+          some processing power. (default enabled)
+      --grayscale, --no-grayscale
+                                 Grayscale video output (default disabled)
+          Output video in grayscale. As the color information aren't decoded, this can save some processing power.
+          (default disabled)
+  -f, --fullscreen, --no-fullscreen
+                                 Fullscreen video output (default disabled)
+          Start video in fullscreen mode (default disabled)
+      --drop-late-frames, --no-drop-late-frames
+                                 Drop late frames (default enabled)
+          This drops frames that are late (arrive to the video output after their intended display date). (default
+          enabled)
+      --skip-frames, --no-skip-frames
+                                 Skip frames (default enabled)
+          This option enables framedropping on MPEG2 stream. Framedropping occurs when your computer is not
+          powerful enough (default enabled)
+      --quiet-synchro, --no-quiet-synchro
+                                 Quiet synchro (default disabled)
+          This avoids flooding the message log with debug output from the video output synchronization mechanism.
+          (default disabled)
+      --overlay, --no-overlay    Overlay video output (default enabled)
+          Overlay is the hardware acceleration capability of your video card (ability to render video directly).
+          VLC will try to use it by default. (default enabled)
+      --video-on-top, --no-video-on-top
+                                 Always on top (default disabled)
+          Always place the video window on top of other windows. (default disabled)
+      --disable-screensaver, --no-disable-screensaver
+                                 Disable screensaver (default enabled)
+          Disable the screensaver during video playback. (default enabled)
+      --snapshot-path <string>   Video snapshot directory (or filename)
+          Directory where the video snapshots will be stored.
+      --snapshot-prefix <string> Video snapshot file prefix
+          Video snapshot file prefix
+      --snapshot-format {png,jpg}
+                                 Video snapshot format
+          Image format which will be used to store the video snapshots
+      --snapshot-preview, --no-snapshot-preview
+                                 Display video snapshot preview (default enabled)
+          Display the snapshot preview in the screen's top-left corner. (default enabled)
+      --snapshot-sequential, --no-snapshot-sequential
+                                 Use sequential numbers instead of timestamps (default disabled)
+          Use sequential numbers instead of timestamps for snapshot numbering (default disabled)
+      --width <integer>          Video width
+          You can enforce the video width. By default (-1) VLC will adapt to the video characteristics.
+      --height <integer>         Video height
+          You can enforce the video height. By default (-1) VLC will adapt to the video characteristics.
+      --video-x <integer>        Video X coordinate
+          You can enforce the position of the top left corner of the video window (X coordinate).
+      --video-y <integer>        Video Y coordinate
+          You can enforce the position of the top left corner of the video window (Y coordinate).
+      --crop <string>            Video cropping
+          This forces the cropping of the source video. Accepted formats are x:y (4:3, 16:9, etc.) expressing the
+          global image aspect.
+      --custom-crop-ratios <string>
+                                 Custom crop ratios list
+          Comma seperated list of crop ratios which will be added in the interface's crop ratios list.
+      --aspect-ratio <string>    Source aspect ratio
+          This forces the source aspect ratio. For instance, some DVDs claim to be 16:9 while they are actually
+          4:3. This can also be used as a hint for VLC when a movie does not have aspect ratio information.
+          Accepted formats are x:y (4:3, 16:9, etc.) expressing the global image aspect, or a float value (1.25,
+          1.3333, etc.) expressing pixel squareness.
+      --monitor-par <string>     Monitor pixel aspect ratio
+          This forces the monitor aspect ratio. Most monitors have square pixels (1:1). If you have a 16:9 screen,
+          you might need to change this to 4:3 in order to keep proportions.
+      --custom-aspect-ratios <string>
+                                 Custom aspect ratios list
+          Comma seperated list of aspect ratios which will be added in the interface's aspect ratio list.
+      --hdtv-fix, --no-hdtv-fix  Fix HDTV height (default enabled)
+          This allows proper handling of HDTV-1080 video format even if broken encoder incorrectly sets height to
+          1088 lines. You should only disable this option if your video has a non-standard format requiring all
+          1088 lines. (default enabled)
+      --video-deco, --no-video-deco
+                                 Window decorations (default enabled)
+          VLC can avoid creating window caption, frames, etc... around the video, giving a "minimal" window.
+          (default enabled)
+      --video-title <string>     Video title
+          Custom title for the video window (in case the video is not embedded in the interface).
+      --align {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Video alignment
+          Enforce the alignment of the video in its window. By default (0) it will be centered (0=center, 1=left,
+          2=right, 4=top, 8=bottom, you can also use combinations of these values, like 6=4+2 meaning top-right).
+      --zoom <float>             Zoom video
+          You can zoom the video by the specified factor.
+  -V, --vout <string>            Video output module
+          This is the the video output method used by VLC. The default behavior is to automatically select the best
+          method available.
+      --vout-filter <string>     Video filter module
+          This adds post-processing filters to enhance the picture quality, for instance deinterlacing, or to clone
+          or distort the video window.
+
+ Subpictures
+      --spu, --no-spu            Enable sub-pictures (default enabled)
+          You can completely disable the sub-picture processing. (default enabled)
+      --osd, --no-osd            On Screen Display (default enabled)
+          VLC can display messages on the video. This is called OSD (On Screen Display). (default enabled)
+      --text-renderer <string>   Text rendering module
+          VLC normally uses Freetype for rendering, but this allows you to use svg for instance.
+      --sub-file <string>        Use subtitle file
+          Load this subtitle file. To be used when autodetect cannot detect your subtitle file.
+      --sub-autodetect-file, --no-sub-autodetect-file
+                                 Autodetect subtitle files (default enabled)
+          Automatically detect a subtitle file, if no subtitle filename is specified (based on the filename of the
+          movie). (default enabled)
+      --sub-autodetect-fuzzy <integer>
+                                 Subtitle autodetection fuzziness
+          This determines how fuzzy subtitle and movie filename matching will be. Options are:
+0 = no subtitles
+          autodetected
+1 = any subtitle file
+2 = any subtitle file containing the movie name
+3 = subtitle file
+          matching the movie name with additional chars
+4 = subtitle file matching the movie name exactly
+      --sub-autodetect-path <string>
+                                 Subtitle autodetection paths
+          Look for a subtitle file in those paths too, if your subtitle file was not found in the current directory.
+      --sub-margin <integer>     Force subtitle position
+          You can use this option to place the subtitles under the movie, instead of over the movie. Try several
+          positions.
+      --sub-filter <string>      Subpictures filter module
+          This adds so-called "subpicture filters". These filters overlay some images or text over the video (like
+          a logo, arbitraty text...).
+      --program <integer>        Program
+          Choose the program to select by giving its Service ID. Only use this option if you want to read a
+          multi-program stream (like DVB streams for example).
+      --programs <string>        Programs
+          Choose the programs to select by giving a comma-separated list of Service IDs (SIDs). Only use this
+          option if you want to read a multi-program stream (like DVB streams for example).
+      --audio-track <integer>    Audio track
+          Stream number of the audio track to use (from 0 to n).
+      --sub-track <integer>      Subtitles track
+          Stream number of the subtitle track to use (from 0 to n).
+      --audio-language <string>  Audio language
+          Language of the audio track you want to use (comma separated, two or three letter country code).
+      --sub-language <string>    Subtitle language
+          Language of the subtitle track you want to use (comma separated, two or tree letter country code).
+      --audio-track-id <integer> Audio track ID
+          Stream ID of the audio track to use.
+      --sub-track-id <integer>   Subtitles track ID
+          Stream ID of the subtitle track to use.
+      --input-repeat <integer>   Input repetitions
+          Number of time the same input will be repeated
+      --start-time <integer>     Start time
+          The stream will start at this position (in seconds).
+      --stop-time <integer>      Stop time
+          The stream will stop at this position (in seconds).
+      --input-list <string>      Input list
+          You can give a comma-separated list of inputs that will be concatenated together after the normal one.
+      --input-slave <string>     Input slave (experimental)
+          This allows you to play from several inputs at the same time. This feature is experimental, not all
+          formats are supported. Use a '#' separated list of inputs.
+      --bookmarks <string>       Bookmarks list for a stream
+          You can manually give a list of bookmarks for a stream in the form "{name=bookmark-name,time=optional-time
+          -offset,bytes=optional-byte-offset},{...}"
+      --dvd <string>             DVD device
+          This is the default DVD device to use.
+      --vcd <string>             VCD device
+          This is the default VCD device to use. If you don't specify anything, we'll scan for a suitable CD-ROM
+          device.
+      --cd-audio <string>        Audio CD device
+          This is the default Audio CD device to use.
+      --server-port <integer>    UDP port
+          This is the default port used for UDP streams. Default is 1234.
+      --mtu <integer>            MTU of the network interface
+          This is the maximum packet size that can be transmitted over the network interface. On Ethernet it is
+          usually 1500 bytes.
+  -6, --ipv6, --no-ipv6          Force IPv6 (default disabled)
+          IPv6 will be used by default for all connections. (default disabled)
+  -4, --ipv4, --no-ipv4          Force IPv4 (default disabled)
+          IPv4 will be used by default for all connections. (default disabled)
+      --ipv4-timeout <integer>   TCP connection timeout
+          Default TCP connection timeout (in milliseconds). 
+      --socks <string>           SOCKS server
+          SOCKS proxy server to use. This must be of the form address:port. It will be used for all TCP connections
+      --socks-user <string>      SOCKS user name
+          User name to be used for connection to the SOCKS proxy.
+      --socks-pwd <string>       SOCKS password
+          Password to be used for connection to the SOCKS proxy.
+      --meta-title <string>      Title metadata
+          Allows you to specify a "title" metadata for an input.
+      --meta-author <string>     Author metadata
+          Allows you to specify an "author" metadata for an input.
+      --meta-artist <string>     Artist metadata
+          Allows you to specify an "artist" metadata for an input.
+      --meta-genre <string>      Genre metadata
+          Allows you to specify a "genre" metadata for an input.
+      --meta-copyright <string>  Copyright metadata
+          Allows you to specify a "copyright" metadata for an input.
+      --meta-description <string>
+                                 Description metadata
+          Allows you to specify a "description" metadata for an input.
+      --meta-date <string>       Date metadata
+          Allows you to specify a "date" metadata for an input.
+      --meta-url <string>        URL metadata
+          Allows you to specify a "url" metadata for an input.
+      --cr-average <integer>     Clock reference average counter
+          When using the PVR input (or a very irregular source), you should set this to 10000.
+      --clock-synchro {-1 (Default), 0 (Disable), 1 (Enable)}
+                                 Clock synchronisation
+          It is possible to disable the input clock synchronisation for real-time sources. Use this if you
+          experience jerky playback of network streams.
+      --network-synchronisation, --no-network-synchronisation
+                                 Network synchronisation (default disabled)
+          This allows you to remotely synchronise clocks for server and client. The detailed settings are available
+          in Advanced / Network Sync. (default disabled)
+
+ Decoders
+      --codec <string>           Preferred decoders list
+          List of codecs that VLC will use in priority. For instance, 'dummy,a52' will try the dummy and a52 codecs
+          before trying the other ones. Only advanced users should alter this option as it can break playback of
+          all your streams.
+      --encoder <string>         Preferred encoders list
+          This allows you to select a list of encoders that VLC will use in priority.
+
+ Input
+      --access <string>          Access module
+          This allows you to force an access module. You can use it if the correct access is not automatically
+          detected. You should not set this as a global option unless you really know what you are doing.
+      --access-filter <string>   Access filter module
+          Access filters are used to modify the stream that is being read. This is used for instance for
+          timeshifting.
+      --demux <string>           Demux module
+          Demultiplexers are used to separate the "elementary" streams (like audio and video streams). You can use
+          it if the correct demuxer is not automatically detected. You should not set this as a global option
+          unless you really know what you are doing.
+
+ Stream output
+      --sout <string>            Default stream output chain
+          You can enter here a default stream output chain. Refer to the documentation to learn how to build such
+          chains.Warning: this chain will be enabled for all streams.
+      --sout-display, --no-sout-display
+                                 Display while streaming (default disabled)
+          Play locally the stream while streaming it. (default disabled)
+      --sout-keep, --no-sout-keep
+                                 Keep stream output open (default disabled)
+          This allows you to keep an unique stream output instance across multiple playlist item (automatically
+          insert the gather stream output if not specified) (default disabled)
+      --sout-all, --no-sout-all  Enable streaming of all ES (default disabled)
+          Stream all elementary streams (video, audio and subtitles) (default disabled)
+      --sout-audio, --no-sout-audio
+                                 Enable audio stream output (default enabled)
+          Choose whether the audio stream should be redirected to the stream output facility when this last one is
+          enabled. (default enabled)
+      --sout-video, --no-sout-video
+                                 Enable video stream output (default enabled)
+          Choose whether the video stream should be redirected to the stream output facility when this last one is
+          enabled. (default enabled)
+      --sout-spu, --no-sout-spu  Enable SPU stream output (default enabled)
+          Choose whether the SPU streams should be redirected to the stream output facility when this last one is
+          enabled. (default enabled)
+      --vlm-conf <string>        VLM configuration file
+          Read a VLM configuration file as soon as VLM is started.
+      --mux <string>             Mux module
+          This is a legacy entry to let you configure mux modules
+      --access_output <string>   Access output module
+          This is a legacy entry to let you configure access output modules
+      --ttl <integer>            Hop limit (TTL)
+          This is the hop limit (also known as "Time-To-Live" or TTL) of the multicast packets sent by the stream
+          output (0 = use operating system built-in default).
+      --miface <string>          IPv6 multicast output interface
+          Default IPv6 multicast interface. This overrides the routing table.
+      --miface-addr <string>     IPv4 multicast output interface address
+          IPv4 adress for the default multicast interface. This overrides the routing table.
+      --packetizer <string>      Preferred packetizer list
+          This allows you to select the order in which VLC will choose its packetizers.
+      --sap-flow-control, --no-sap-flow-control
+                                 Control SAP flow (default disabled)
+          If this option is enabled, the flow on the SAP multicast address will be controlled. This is needed if
+          you want to make announcements on the MBone. (default disabled)
+      --sap-interval <integer>   SAP announcement interval
+          When the SAP flow control is disabled, this lets you set the fixed interval between SAP announcements.
+
+ CPU
+      --fpu, --no-fpu            Enable FPU support (default enabled)
+          If your processor has a floating point calculation unit, VLC can take advantage of it. (default enabled)
+      --mmx, --no-mmx            Enable CPU MMX support (default enabled)
+          If your processor supports the MMX instructions set, VLC can take advantage of them. (default enabled)
+      --3dn, --no-3dn            Enable CPU 3D Now! support (default enabled)
+          If your processor supports the 3D Now! instructions set, VLC can take advantage of them. (default enabled)
+      --mmxext, --no-mmxext      Enable CPU MMX EXT support (default enabled)
+          If your processor supports the MMX EXT instructions set, VLC can take advantage of them. (default enabled)
+      --sse, --no-sse            Enable CPU SSE support (default enabled)
+          If your processor supports the SSE instructions set, VLC can take advantage of them. (default enabled)
+      --sse2, --no-sse2          Enable CPU SSE2 support (default enabled)
+          If your processor supports the SSE2 instructions set, VLC can take advantage of them. (default enabled)
+
+ Miscellaneous
+  -A, --memcpy <string>          Memory copy module
+          You can select which memory copy module you want to use. By default VLC will select the fastest one
+          supported by your hardware.
+      --plugins-cache, --no-plugins-cache
+                                 Use a plugins cache (default enabled)
+          Use a plugins cache which will greatly improve the startup time of VLC. (default enabled)
+      --plugin-path <string>     Modules search path
+          Additional path for VLC to look for its modules.
+      --minimize-threads, --no-minimize-threads
+                                 Minimize number of threads (default disabled)
+          This option minimizes the number of threads needed to run VLC. (default disabled)
+      --rt-priority, --no-rt-priority
+                                 Allow real-time priority (default disabled)
+          Running VLC in real-time priority will allow for much more precise scheduling and yield better,
+          especially when streaming content. It can however lock up your whole machine, or make it very very slow.
+          You should only activate this if you know what you're doing. (default disabled)
+      --rt-offset <integer>      Adjust VLC priority
+          This option adds an offset (positive or negative) to VLC default priorities. You can use it to tune VLC
+          priority against other programs, or against other VLC instances.
+
+ Playlist
+  -Z, --random, --no-random      Play files randomly forever (default disabled)
+          VLC will randomly play files in the playlist until interrupted. (default disabled)
+  -L, --loop, --no-loop          Repeat all (default disabled)
+          VLC will keep playing the playlist indefinitely. (default disabled)
+  -R, --repeat, --no-repeat      Repeat current item (default disabled)
+          VLC will keep playing the current playlist item. (default disabled)
+      --play-and-stop, --no-play-and-stop
+                                 Play and stop (default disabled)
+          Stop the playlist after each played playlist item. (default disabled)
+      --open <string>            Default stream
+          This stream will always be opened at VLC startup.
+      --auto-preparse, --no-auto-preparse
+                                 Automatically preparse files (default enabled)
+          Automatically preparse files added to the playlist (to retrieve some metadata). (default enabled)
+  -S, --services-discovery <string>
+                                 Services discovery modules
+          Specifies the services discovery modules to load, separated by semi-colons. Typical values are sap, hal,
+          ...
+  -v, --verbose <integer>        Verbosity (0,1,2)
+          This is the verbosity level (0=only errors and standard messages, 1=warnings, 2=debug).
+  -q, --quiet, --no-quiet        Be quiet (default disabled)
+          Turn off all warning and information messages. (default disabled)
+  -d, --daemon, --no-daemon      Run as daemon process (default disabled)
+          Runs VLC as a background daemon process. (default disabled)
+      --file-logging, --no-file-logging
+                                 Log to file (default disabled)
+          Log all VLC messages to a text file. (default disabled)
+      --syslog, --no-syslog      Log to syslog (default disabled)
+          Log all VLC messages to syslog (UNIX systems). (default disabled)
+      --color, --no-color        Color messages (default disabled)
+          This enables colorization of the messages sent to the console Your terminal needs Linux color support for
+          this to work. (default disabled)
+      --advanced, --no-advanced  Show advanced options (default enabled)
+          When this is enabled, the preferences and/or interfaces will show all available options, including those
+          that most users should never touch. (default enabled)
+      --interact, --no-interact  Interface interaction (default enabled)
+          When this is enabled, the interface will show a dialog box each time some user input is required.
+          (default enabled)
+      --show-intf, --no-show-intf
+                                 Show interface with mouse (default disabled)
+          When this is enabled, the interface is shown when you move the mouse to the edge of the screen in
+          fullscreen mode. (default disabled)
+      --stats, --no-stats        Collect statistics (default enabled)
+          Collect miscellaneous statistics. (default enabled)
+  -I, --intf <string>            Interface module
+          This is the main interface used by VLC. The default behavior is to automatically select the best module
+          available.
+      --extraintf <string>       Extra interface modules
+          You can select "additional interfaces" for VLC. They will be launched in the background in addition to
+          the default interface. Use a comma separated list of interface modules. (common values are "rc" (remote
+          control), "http", "gestures" ...)
+      --control <string>         Control interfaces
+          You can select control interfaces for VLC.
+
+ Hot keys
+      --key-fullscreen <integer> Fullscreen
+          Select the hotkey to use to swap fullscreen state.
+      --key-play-pause <integer> Play/Pause
+          Select the hotkey to use to swap paused state.
+      --key-pause <integer>      Pause only
+          Select the hotkey to use to pause.
+      --key-play <integer>       Play only
+          Select the hotkey to use to play.
+      --key-faster <integer>     Faster
+          Select the hotkey to use for fast forward playback.
+      --key-slower <integer>     Slower
+          Select the hotkey to use for slow motion playback.
+      --key-next <integer>       Next
+          Select the hotkey to use to skip to the next item in the playlist.
+      --key-prev <integer>       Previous
+          Select the hotkey to use to skip to the previous item in the playlist.
+      --key-stop <integer>       Stop
+          Select the hotkey to stop playback.
+      --key-position <integer>   Position
+          Select the hotkey to display the position.
+      --key-jump-extrashort <integer>
+                                 Very short backwards jump
+          Select the hotkey to make a very short backwards jump.
+      --key-jump+extrashort <integer>
+                                 Very short forward jump
+          Select the hotkey to make a very short forward jump.
+      --key-jump-short <integer> Short backwards jump
+          Select the hotkey to make a short backwards jump.
+      --key-jump+short <integer> Short forward jump
+          Select the hotkey to make a short forward jump.
+      --key-jump-medium <integer>
+                                 Medium backwards jump
+          Select the hotkey to make a medium backwards jump.
+      --key-jump+medium <integer>
+                                 Medium forward jump
+          Select the hotkey to make a medium forward jump.
+      --key-jump-long <integer>  Long backwards jump
+          Select the hotkey to make a long backwards jump.
+      --key-jump+long <integer>  Long forward jump
+          Select the hotkey to make a long forward jump.
+      --key-nav-activate <integer>
+                                 Activate
+          Select the key to activate selected item in DVD menus.
+      --key-nav-up <integer>     Navigate up
+          Select the key to move the selector up in DVD menus.
+      --key-nav-down <integer>   Navigate down
+          Select the key to move the selector down in DVD menus.
+      --key-nav-left <integer>   Navigate left
+          Select the key to move the selector left in DVD menus.
+      --key-nav-right <integer>  Navigate right
+          Select the key to move the selector right in DVD menus.
+      --key-disc-menu <integer>  Go to the DVD menu
+          Select the key to take you to the DVD menu
+      --key-title-prev <integer> Select previous DVD title
+          Select the key to choose the previous title from the DVD
+      --key-title-next <integer> Select next DVD title
+          Select the key to choose the next title from the DVD
+      --key-chapter-prev <integer>
+                                 Select prev DVD chapter
+          Select the key to choose the previous chapter from the DVD
+      --key-chapter-next <integer>
+                                 Select next DVD chapter
+          Select the key to choose the next chapter from the DVD
+      --key-quit <integer>       Quit
+          Select the hotkey to quit the application.
+      --key-vol-up <integer>     Volume up
+          Select the key to increase audio volume.
+      --key-vol-down <integer>   Volume down
+          Select the key to decrease audio volume.
+      --key-vol-mute <integer>   Mute
+          Select the key to mute audio.
+      --key-subdelay-up <integer>
+                                 Subtitle delay up
+          Select the key to increase the subtitle delay.
+      --key-subdelay-down <integer>
+                                 Subtitle delay down
+          Select the key to decrease the subtitle delay.
+      --key-audiodelay-up <integer>
+                                 Audio delay up
+          Select the key to increase the audio delay.
+      --key-audiodelay-down <integer>
+                                 Audio delay down
+          Select the key to decrease the audio delay.
+      --key-audio-track <integer>
+                                 Cycle audio track
+          Cycle through the available audio tracks(languages).
+      --key-subtitle-track <integer>
+                                 Cycle subtitle track
+          Cycle through the available subtitle tracks.
+      --key-aspect-ratio <integer>
+                                 Cycle source aspect ratio
+          Cycle through a predefined list of source aspect ratios.
+      --key-crop <integer>       Cycle video crop
+          Cycle through a predefined list of crop formats.
+      --key-deinterlace <integer>
+                                 Cycle deinterlace modes
+          Cycle through deinterlace modes.
+      --key-intf-show <integer>  Show interface
+          Raise the interface above all other windows.
+      --key-intf-hide <integer>  Hide interface
+          Lower the interface below all other windows.
+      --key-snapshot <integer>   Take video snapshot
+          Takes a video snapshot and writes it to disk.
+      --key-history-back <integer>
+                                 Go back in browsing history
+          Select the key to go back (to the previous media item) in the browsing history.
+      --key-history-forward <integer>
+                                 Go forward in browsing history
+          Select the key to go forward (to the next media item) in the browsing history.
+      --key-record <integer>     Record
+          Record access filter start/stop.
+      --key-dump <integer>       Dump
+          Media dump access filter trigger.
+      --key-crop-top <integer>   Crop one pixel from the top of the video
+          Crop one pixel from the top of the video
+      --key-uncrop-top <integer> Uncrop one pixel from the top of the video
+          Uncrop one pixel from the top of the video
+      --key-crop-left <integer>  Crop one pixel from the left of the video
+          Crop one pixel from the left of the video
+      --key-uncrop-left <integer>
+                                 Uncrop one pixel from the left of the video
+          Uncrop one pixel from the left of the video
+      --key-crop-bottom <integer>
+                                 Crop one pixel from the bottom of the video
+          Crop one pixel from the bottom of the video
+      --key-uncrop-bottom <integer>
+                                 Uncrop one pixel from the bottom of the video
+          Uncrop one pixel from the bottom of the video
+      --key-crop-right <integer> Crop one pixel from the right of the video
+          Crop one pixel from the right of the video
+      --key-uncrop-right <integer>
+                                 Uncrop one pixel from the right of the video
+          Uncrop one pixel from the right of the video
+      --extrashort-jump-size <integer>
+                                 Very short jump length
+          Very short jump length, in seconds.
+      --short-jump-size <integer>
+                                 Short jump length
+          Short jump length, in seconds.
+      --medium-jump-size <integer>
+                                 Medium jump length
+          Medium jump length, in seconds.
+      --long-jump-size <integer> Long jump length
+          Long jump length, in seconds.
+      --key-set-bookmark1 <integer>
+                                 Set playlist bookmark 1
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark2 <integer>
+                                 Set playlist bookmark 2
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark3 <integer>
+                                 Set playlist bookmark 3
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark4 <integer>
+                                 Set playlist bookmark 4
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark5 <integer>
+                                 Set playlist bookmark 5
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark6 <integer>
+                                 Set playlist bookmark 6
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark7 <integer>
+                                 Set playlist bookmark 7
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark8 <integer>
+                                 Set playlist bookmark 8
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark9 <integer>
+                                 Set playlist bookmark 9
+          Select the key to set this playlist bookmark.
+      --key-set-bookmark10 <integer>
+                                 Set playlist bookmark 10
+          Select the key to set this playlist bookmark.
+      --key-play-bookmark1 <integer>
+                                 Play playlist bookmark 1
+          Select the key to play this bookmark.
+      --key-play-bookmark2 <integer>
+                                 Play playlist bookmark 2
+          Select the key to play this bookmark.
+      --key-play-bookmark3 <integer>
+                                 Play playlist bookmark 3
+          Select the key to play this bookmark.
+      --key-play-bookmark4 <integer>
+                                 Play playlist bookmark 4
+          Select the key to play this bookmark.
+      --key-play-bookmark5 <integer>
+                                 Play playlist bookmark 5
+          Select the key to play this bookmark.
+      --key-play-bookmark6 <integer>
+                                 Play playlist bookmark 6
+          Select the key to play this bookmark.
+      --key-play-bookmark7 <integer>
+                                 Play playlist bookmark 7
+          Select the key to play this bookmark.
+      --key-play-bookmark8 <integer>
+                                 Play playlist bookmark 8
+          Select the key to play this bookmark.
+      --key-play-bookmark9 <integer>
+                                 Play playlist bookmark 9
+          Select the key to play this bookmark.
+      --key-play-bookmark10 <integer>
+                                 Play playlist bookmark 10
+          Select the key to play this bookmark.
+      --bookmark1 <string>       Playlist bookmark 1
+          This allows you to define playlist bookmarks.
+      --bookmark2 <string>       Playlist bookmark 2
+          This allows you to define playlist bookmarks.
+      --bookmark3 <string>       Playlist bookmark 3
+          This allows you to define playlist bookmarks.
+      --bookmark4 <string>       Playlist bookmark 4
+          This allows you to define playlist bookmarks.
+      --bookmark5 <string>       Playlist bookmark 5
+          This allows you to define playlist bookmarks.
+      --bookmark6 <string>       Playlist bookmark 6
+          This allows you to define playlist bookmarks.
+      --bookmark7 <string>       Playlist bookmark 7
+          This allows you to define playlist bookmarks.
+      --bookmark8 <string>       Playlist bookmark 8
+          This allows you to define playlist bookmarks.
+      --bookmark9 <string>       Playlist bookmark 9
+          This allows you to define playlist bookmarks.
+      --bookmark10 <string>      Playlist bookmark 10
+          This allows you to define playlist bookmarks.
+
+ Help options
+  -h, --help                     print help for VLC (can be combined with --advanced)
+  -H, --longhelp                 print help for VLC and all its modules (can be combined with --advanced)
+      --advanced                 print help for the advanced options
+      --help-verbose             ask for extra verbosity when displaying help
+  -l, --list                     print a list of available modules
+  -p, --module <string>          print help on a specific module (can be combined with --advanced)
+      --save-config              save the current command line options in the config
+      --reset-config             reset the current config to the default values
+      --config <string>          use alternate config file
+      --reset-plugins-cache      resets the current plugins cache
+      --version                  print version information
+
+ TS muxer (libdvbpsi)
+      --sout-ts-pid-video <integer>
+                                 Video PID
+          Assign a fixed PID to the video stream. The PCR PID will automatically be the video.
+      --sout-ts-pid-audio <integer>
+                                 Audio PID
+          Assign a fixed PID to the audio stream.
+      --sout-ts-pid-spu <integer>
+                                 SPU PID
+          Assign a fixed PID to the SPU.
+      --sout-ts-pid-pmt <integer>
+                                 PMT PID
+          Assign a fixed PID to the PMT
+      --sout-ts-tsid <integer>   TS ID
+          Assign a fixed Transport Stream ID.
+      --sout-ts-netid <integer>  NET ID
+          Assign a fixed Network ID (for SDT table)
+      --sout-ts-program-pmt <string>
+                                 PMT Program numbers
+          Assign a program number to each PMT. This requires "Set PID to ID of ES" to be enabled.
+      --sout-ts-es-id-pid, --no-sout-ts-es-id-pid
+                                 Set PID to ID of ES (default disabled)
+          Sets PID to the ID if the incoming ES. This is for use with --ts-es-id-pid, and allows to have the same
+          PIDs in the input and output streams. (default disabled)
+      --sout-ts-muxpmt <string>  Mux PMT (requires --sout-ts-es-id-pid)
+          Define the pids to add to each pmt. This requires "Set PID to ID of ES" to be enabled.
+      --sout-ts-sdtdesc <string> SDT Descriptors (requires --sout-ts-es-id-pid)
+          Defines the descriptors of each SDT. Thisrequires "Set PID to ID of ES" to be enabled.
+      --sout-ts-alignment, --no-sout-ts-alignment
+                                 Data alignment (default enabled)
+          Enforces alignment of all access units on PES boundaries. Disabling this might save some bandwidth but
+          introduce incompatibilities. (default enabled)
+      --sout-ts-shaping <integer>
+                                 Shaping delay (ms)
+          Cut the stream in slices of the given duration, and ensure a constant bitrate between the two boundaries.
+          This avoids having huge bitrate peaks, especially for reference frames.
+      --sout-ts-use-key-frames, --no-sout-ts-use-key-frames
+                                 Use keyframes (default disabled)
+          If enabled, and shaping is specified, the TS muxer will place the boundaries at the end of I pictures. In
+          that case, the shaping duration given by the user is a worse case used when no reference frame is
+          available. This enhances the efficiency of the shaping algorithm, since I frames are usually the biggest
+          frames in the stream. (default disabled)
+      --sout-ts-pcr <integer>    PCR delay (ms)
+          Set at which interval PCRs (Program Clock Reference) will be sent (in milliseconds). This value should be
+          below 100ms. (default is 70ms).
+      --sout-ts-bmin <integer>   Minimum B (deprecated)
+          This setting is deprecated and not used anymore
+      --sout-ts-bmax <integer>   Maximum B (deprecated)
+          This setting is deprecated and not used anymore
+      --sout-ts-dts-delay <integer>
+                                 DTS delay (ms)
+          Delay the DTS (decoding time stamps) and PTS (presentation timestamps) of the data in the stream,
+          compared to the PCRs. This allows for some buffering inside the client decoder.
+      --sout-ts-crypt-audio, --no-sout-ts-crypt-audio
+                                 Crypt audio (default enabled)
+          Crypt audio using CSA (default enabled)
+      --sout-ts-crypt-video, --no-sout-ts-crypt-video
+                                 Crypt video (default enabled)
+          Crypt video using CSA (default enabled)
+      --sout-ts-csa-ck <string>  CSA Key
+          CSA encryption key. This must be a 16 char string (8 hexadecimal bytes).
+      --sout-ts-csa-pkt <integer>
+                                 Packet size in bytes to encrypt
+          Size of the TS packet to encrypt. The encryption routines subtract the TS-header from the value before
+          encrypting. 
+
+ Theora video decoder
+      --sout-theora-quality <integer>
+                                 Encoding quality
+          Enforce a quality between 1 (low) and 10 (high), instead of specifying a particular bitrate. This will
+          produce a VBR stream.
+
+ UDP stream output
+      --sout-udp-caching <integer>
+                                 Caching value (ms)
+          Default caching value for outbound UDP streams. This value should be set in milliseconds.
+      --sout-udp-ttl <integer>   Time-To-Live (TTL)
+          Time-To-Live of the outgoing stream.
+      --sout-udp-group <integer> Group packets
+          Packets can be sent one by one at the right time or by groups. You can choose the number of packets that
+          will be sent at a time. It helps reducing the scheduling load on heavily-loaded systems.
+      --sout-udp-raw, --no-sout-udp-raw
+                                 Raw write (default disabled)
+          Packets will be sent directly, without trying to fill the MTU (ie, without trying to make the biggest
+          possible packets in order to improve streaming). (default disabled)
+
+ HTTP stream output
+      --sout-http-user <string>  Username
+          User name that will be requested to access the stream.
+      --sout-http-pwd <string>   Password
+          Password that will be requested to access the stream.
+      --sout-http-mime <string>  Mime
+          MIME returned by the server (autodetected if not specified.
+      --sout-http-cert <string>  Certificate file
+          Path to the x509 PEM certificate file that will be used for HTTPS.
+      --sout-http-key <string>   Private key file
+          Path to the x509 PEM private key file that will be used for HTTPS. Leave empty if you don't have one.
+      --sout-http-ca <string>    Root CA file
+          Path to the x509 PEM trusted root CA certificates (certificate authority) file that will be used for
+          HTTPS. Leave empty if you don't have one.
+      --sout-http-crl <string>   CRL file
+          Path to the x509 PEM Certificates Revocation List file that will be used for SSL. Leave empty if you
+          don't have one.
+      --sout-http-bonjour, --no-sout-http-bonjour
+                                 Advertise with Bonjour (default disabled)
+          Advertise the stream with the Bonjour protocol. (default disabled)
+
+ File stream output
+      --sout-file-append, --no-sout-file-append
+                                 Append to file (default disabled)
+          Append to file if it exists instead of replacing it. (default disabled)
+
+ Ncurses interface
+      --browse-dir <string>      Filebrowser starting point
+          This option allows you to specify the directory the ncurses filebrowser will show you initially.
+
+ Image video output
+      --image-out-format {png,jpeg}
+                                 Image format
+          Format of the output images (png or jpg).
+      --image-width <integer>    Image width
+          You can enforce the image width. By default (-1) VLC will adapt to the video characteristics.
+      --image-height <integer>   Image height
+          You can enforce the image height. By default (-1) VLC will adapt to the video characteristics.
+      --image-out-ratio <integer>
+                                 Recording ratio
+          Ratio of images to record. 3 means that one image out of three is recorded.
+      --image-out-prefix <string>
+                                 Filename prefix
+          Prefix of the output images filenames. Output filenames will have the "prefixNUMBER.format" form.
+      --image-out-replace, --no-image-out-replace
+                                 Always write to the same file (default disabled)
+          Always write to the same file instead of creating one file per image. In this case, the number is not
+          appended to the filename. (default disabled)
+
+ File audio output
+      --audiofile-format {u8,s8,u16,s16,u16_le,s16_le,u16_be,s16_be,fixed32,float32,spdif}
+                                 Output format
+          One of "u8", "s8", "u16", "s16", "u16_le", "s16_le", "u16_be", "s16_be", "fixed32", "float32" or "spdif"
+      --audiofile-channels <integer>
+                                 Number of output channels
+          By default, all the channels of the incoming will be saved but you can restrict the number of channels
+          here.
+      --audiofile-file <string>  Output file
+          File to which the audio samples will be written to.
+      --audiofile-wav, --no-audiofile-wav
+                                 Add WAVE header (default enabled)
+          Instead of writing a raw file, you can add a WAV header to the file. (default enabled)
+
+ PS muxer
+      --sout-ps-dts-delay <integer>
+                                 DTS delay (ms)
+          Delay the DTS (decoding time stamps) and PTS (presentation timestamps) of the data in the stream,
+          compared to the SCRs. This allows for some buffering inside the client decoder.
+      --sout-ps-pes-max-size <integer>
+                                 PES maximum size
+          Set the maximum allowed PES size when producing the MPEG PS streams.
+
+ Multipart JPEG muxer
+      --sout-mpjpeg-separator <string>
+                                 Multipart separator string
+          Multipart strings like MPJPEG use a specific string to separate its content pieces. You can select this
+          string. Default is --myboundary
+
+ MP4/MOV muxer
+      --sout-mp4-faststart, --no-sout-mp4-faststart
+                                 Create "Fast Start" files (default enabled)
+          Create "Fast Start" files. "Fast Start" files are optimized for downloads and allow the user to start
+          previewing the file while it is downloading. (default enabled)
+
+ ASF muxer
+      --sout-asf-title <string>  Title
+          Title to put in ASF comments.
+      --sout-asf-author <string> Author
+          Author to put in ASF comments.
+      --sout-asf-copyright <string>
+                                 Copyright
+          Copyright string to put in ASF comments.
+      --sout-asf-comment <string>
+                                 Comment
+          Comment to put in ASF comments.
+      --sout-asf-rating <string> Rating
+          "Rating" to put in ASF comments.
+      --sout-asf-packet-size <integer>
+                                 Packet Size
+          ASF packet size -- default is 4096 bytes
+
+ HTTP input
+      --http-proxy <string>      HTTP proxy
+          HTTP proxy to be usesd It must be of the form http://[user[:pass]@]myproxy.mydomain:myport/ ; if empty,
+          the http_proxy environment variable will be tried.
+      --http-caching <integer>   Caching value in ms
+          Caching value for HTTP streams. This value should be set in milliseconds.
+      --http-user-agent <string> HTTP user agent
+          User agent that will be used for the connection.
+      --http-reconnect, --no-http-reconnect
+                                 Auto re-connect (default disabled)
+          Automatically try to reconnect to the stream in case of a sudden disconnect. (default disabled)
+      --http-continuous, --no-http-continuous
+                                 Continuous stream (default disabled)
+          Read a file that is being constantly updated (for example, a JPG file on a server).You should not
+          globally enable this option as it will break all other types of HTTP streams. (default disabled)
+
+ TCP input
+      --tcp-caching <integer>    Caching value in ms
+          Caching value for TCP streams. This value should be set in milliseconds.
+
+ Fake input
+      --fake-caching <integer>   Caching value in ms
+          Caching value for fake streams. This value should be set in milliseconds.
+      --fake-fps <float>         Framerate
+          Number of frames per second (eg. 24, 25, 29.97, 30).
+      --fake-id <integer>        ID
+          Set the ID of the fake elementary stream for use in #duplicate{} constructs (default 0).
+      --fake-duration <integer>  Duration in ms
+          Duration of the fake streaming before faking an end-of-file (default is 0, meaning that the stream is
+          unlimited).
+
+ Audio CD input
+      --cdda-caching <integer>   Caching value in ms
+          Default caching value for Audio CDs. This value should be set in milliseconds.
+      --cdda-separate-tracks, --no-cdda-separate-tracks
+                                 (null) (default enabled)
+      --cdda-track <integer>     (null)
+      --cddb-server <string>     CDDB Server
+          Address of the CDDB server to use.
+      --cddb-port <integer>      CDDB port
+          CDDB Server port to use.
+
+ File input
+      --file-caching <integer>   Caching value in ms
+          Caching value for files. This value should be set in milliseconds.
+      --file-cat <string>        Concatenate with additional files
+          Play split files as if they were part of a unique file. You need to specify a comma-separated list of
+          files.
+
+ SMB input
+      --smb-caching <integer>    Caching value in ms
+          Caching value for SMB streams. This value should be set in milliseconds.
+      --smb-user <string>        SMB user name
+          User name that will be used for the connection.
+      --smb-pwd <string>         SMB password
+          Password that will be used for the connection.
+      --smb-domain <string>      SMB domain
+          Domain/Workgroup that will be used for the connection.
+
+ Video CD (VCD 1.0, 1.1, 2.0, SVCD, HQVCD) input
+      --vcdx-debug <integer>     If nonzero, this gives additional debug information.
+          This integer when viewed in binary is a debugging mask
+meta info         1
+event info        2
+MRL       
+                 4
+external call     8
+all calls (10)   16
+LSN       (20)   32
+PBC       (40)   64
+libcdio   (80) 
+          128
+seek-set (100)  256
+seek-cur (200)  512
+still    (400) 1024
+vcdinfo  (800) 2048
+
+      --vcdx-blocks-per-read <integer>
+                                 Number of CD blocks to get in a single read.
+          Number of CD blocks to get in a single read.
+      --vcdx-PBC, --no-vcdx-PBC  Use playback control? (default disabled)
+          If VCD is authored with playback control, use it. Otherwise we play by tracks. (default disabled)
+      --vcdx-track-length, --no-vcdx-track-length
+                                 Use track length as maximum unit in seek? (default enabled)
+          If set, the length of the seek bar is the track rather than the length of an entry. (default enabled)
+      --vcdx-extended-info, --no-vcdx-extended-info
+                                 Show extended VCD info? (default disabled)
+          Show the maximum amount of information under Stream and Media Info. Shows for example playback control
+          navigation. (default disabled)
+      --vcdx-author-format <string>
+                                 Format to use in the playlist's "author" field.
+          Format used in the GUI Playlist Title. Similar to the Unix date 
+Format specifiers that start with a
+          percent sign. Specifiers are: 
+   %A : The album information
+   %C : The VCD volume count - the number of
+          CDs in the collection
+   %c : The VCD volume num - the number of the CD in the collection.
+   %F : The
+          VCD Format, e.g. VCD 1.0, VCD 1.1, VCD 2.0, or SVCD
+   %I : The current entry/segment/playback type, e.g.
+          ENTRY, TRACK, SEGMENT...
+   %L : The playlist ID prefixed with " LID" if it exists
+   %N : The current
+          number of the %I - a decimal number
+   %P : The publisher ID
+   %p : The preparer ID
+   %S : If we are in
+          a segment (menu), the kind of segment
+   %T : The MPEG track number (starts at 1)
+   %V : The volume set
+          ID
+   %v : The volume ID
+       A number between 1 and the volume count.
+   %% : a % 
+
+      --vcdx-title-format <string>
+                                 Format to use in the playlist's "title" field.
+          Format used in the GUI Playlist Title. Similar to the Unix date 
+Format specifiers that start with a
+          percent sign. Specifiers are: 
+   %A : The album information
+   %C : The VCD volume count - the number of
+          CDs in the collection
+   %c : The VCD volume num - the number of the CD in the collection.
+   %F : The
+          VCD Format, e.g. VCD 1.0, VCD 1.1, VCD 2.0, or SVCD
+   %I : The current entry/segment/playback type, e.g.
+          ENTRY, TRACK, SEGMENT...
+   %L : The playlist ID prefixed with " LID" if it exists
+   %N : The current
+          number of the %I - a decimal number
+   %P : The publisher ID
+   %p : The preparer ID
+   %S : If we are in
+          a segment (menu), the kind of segment
+   %T : The MPEG track number (starts at 1)
+   %V : The volume set
+          ID
+   %v : The volume ID
+       A number between 1 and the volume count.
+   %% : a % 
+
+
+ Digital Video (Firewire/ieee1394)  input
+      --dv-caching <integer>     Caching value in ms
+          Caching value for DV streams. Thisvalue should be set in milliseconds.
+
+ DVB input with v4l2 support
+      --dvb-caching <integer>    Caching value in ms
+          Caching value for DVB streams. This value should be set in milliseconds.
+      --dvb-adapter <integer>    Adapter card to tune
+          Adapter cards have a device file in directory named /dev/dvb/adapter[n] with n>=0.
+      --dvb-device <integer>     Device number to use on adapter
+                --dvb-frequency <integer>  Transponder/multiplex frequency
+          In kHz for DVB-S or Hz for DVB-C/T
+      --dvb-inversion <integer>  Inversion mode
+          Inversion mode [0=off, 1=on, 2=auto]
+      --dvb-probe, --no-dvb-probe
+                                 Probe DVB card for capabilities (default enabled)
+          Some DVB cards do not like to be probed for their capabilities, you can disable this feature if you
+          experience some trouble. (default enabled)
+      --dvb-budget-mode, --no-dvb-budget-mode
+                                 Budget mode (default disabled)
+          This allows you to stream an entire transponder with a "budget" card. (default disabled)
+      --dvb-satno <integer>      Satellite number in the Diseqc system
+          [0=no diseqc, 1-4=satellite number].
+      --dvb-voltage <integer>    LNB voltage
+          In Volts [0, 13=vertical, 18=horizontal].
+      --dvb-high-voltage, --no-dvb-high-voltage
+                                 High LNB voltage (default disabled)
+          Enable high voltage if your cables are particularly long. This is not supported by all frontends.
+          (default disabled)
+      --dvb-tone <integer>       22 kHz tone
+          [0=off, 1=on, -1=auto].
+      --dvb-fec <integer>        Transponder FEC
+          FEC=Forward Error Correction mode [9=auto].
+      --dvb-srate <integer>      Transponder symbol rate in kHz
+                --dvb-lnb-lof1 <integer>   Antenna lnb_lof1 (kHz)
+                --dvb-lnb-lof2 <integer>   Antenna lnb_lof2 (kHz)
+                --dvb-lnb-slof <integer>   Antenna lnb_slof (kHz)
+                --dvb-modulation <integer> Modulation type
+          Modulation type for front-end device.
+      --dvb-code-rate-hp <integer>
+                                 Terrestrial high priority stream code rate (FEC)
+                --dvb-code-rate-lp <integer>
+                                 Terrestrial low priority stream code rate (FEC)
+                --dvb-bandwidth <integer>  Terrestrial bandwidth
+          Terrestrial bandwidth [0=auto,6,7,8 in MHz]
+      --dvb-guard <integer>      Terrestrial guard interval
+                --dvb-transmission <integer>
+                                 Terrestrial transmission mode
+                --dvb-hierarchy <integer>  Terrestrial hierarchy mode
+                --dvb-http-host <string>   HTTP Host address
+          To enable the internal HTTP server, set its address and port here.
+      --dvb-http-user <string>   HTTP user name
+          User name the administrator will use to log into the internal HTTP server.
+      --dvb-http-password <string>
+                                 HTTP password
+          Password the administrator will use to log into the internal HTTP server.
+      --dvb-http-acl <string>    HTTP ACL
+          Access control list (equivalent to .hosts) file path, which will limit the range of IPs entitled to log
+          into the internal HTTP server.
+      --dvb-http-intf-cert <string>
+                                 Certificate file
+          HTTP interface x509 PEM certificate file (enables SSL)
+      --dvb-http-intf-key <string>
+                                 Private key file
+          HTTP interface x509 PEM private key file
+      --dvb-http-intf-ca <string>
+                                 Root CA file
+          HTTP interface x509 PEM trusted root CA certificates file
+      --dvb-http-intf-crl <string>
+                                 CRL file
+          HTTP interface Certificates Revocation List file
+
+ FTP input
+      --ftp-caching <integer>    Caching value in ms
+          Caching value for FTP streams. This value should be set in milliseconds.
+      --ftp-user <string>        FTP user name
+          User name that will be used for the connection.
+      --ftp-pwd <string>         FTP password
+          Password that will be used for the connection.
+      --ftp-account <string>     FTP account
+          Account that will be used for the connection.
+
+ Video4Linux input
+      --v4l-caching <integer>    Caching value in ms
+          Caching value for V4L captures. This value should be set in milliseconds.
+      --v4l-vdev <string>        Video device name
+          Name of the video device to use. If you don't specify anything, no video device will be used.
+      --v4l-adev <string>        Audio device name
+          Name of the audio device to use. If you don't specify anything, no audio device will be used.
+      --v4l-chroma <string>      Video input chroma format
+          Force the Video4Linux video device to use a specific chroma format (eg. I420 (default), RV24, etc.)
+      --v4l-fps <float>          Framerate
+          Framerate to capture, if applicable (-1 for autodetect).
+      --v4l-samplerate <integer> Samplerate
+          Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)
+      --v4l-channel <integer>    Channel
+          Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo).
+      --v4l-tuner <integer>      Tuner
+          Tuner to use, if there are several ones.
+      --v4l-norm {3 (Automatic), 2 (SECAM), 0 (PAL), 1 (NTSC)}
+                                 Norm
+          Norm of the stream (Automatic, SECAM, PAL, or NTSC).
+      --v4l-frequency <integer>  Frequency
+          Frequency to capture (in kHz), if applicable.
+      --v4l-audio <integer>      Audio Channel
+          Audio Channel to use, if there are several audio inputs.
+      --v4l-stereo, --no-v4l-stereo
+                                 Stereo (default enabled)
+          Capture the audio stream in stereo. (default enabled)
+      --v4l-width <integer>      Width
+          Width of the stream to capture (-1 for autodetect).
+      --v4l-height <integer>     Height
+          Height of the stream to capture (-1 for autodetect).
+      --v4l-brightness <integer> Brightness
+          Brightness of the video input.
+      --v4l-colour <integer>     Color
+          Color of the video input.
+      --v4l-hue <integer>        Hue
+          Hue of the video input.
+      --v4l-contrast <integer>   Contrast
+          Contrast of the video input.
+      --v4l-mjpeg, --no-v4l-mjpeg
+                                 MJPEG (default disabled)
+          Set this option if the capture device outputs MJPEG (default disabled)
+      --v4l-decimation <integer> Decimation
+          Decimation level for MJPEG streams
+      --v4l-quality <integer>    Quality
+          Quality of the stream.
+
+ IVTV MPEG Encoding cards input
+      --pvr-caching <integer>    Caching value in ms
+          Default caching value for PVR streams. This value should be set in milliseconds.
+      --pvr-device <string>      Device
+          PVR video device
+      --pvr-radio-device <string>
+                                 Radio device
+          PVR radio device
+      --pvr-norm {0 (Automatic), 16711680 (SECAM), 255 (PAL), 45056 (NTSC)}
+                                 Norm
+          Norm of the stream (Automatic, SECAM, PAL, or NTSC).
+      --pvr-width <integer>      Width
+          Width of the stream to capture (-1 for autodetection).
+      --pvr-height <integer>     Height
+          Height of the stream to capture (-1 for autodetection).
+      --pvr-frequency <integer>  Frequency
+          Frequency to capture (in kHz), if applicable.
+      --pvr-framerate <integer>  Framerate
+          Framerate to capture, if applicable (-1 for autodetect).
+      --pvr-keyint <integer>     Key interval
+          Interval between keyframes (-1 for autodetect).
+      --pvr-bframes <integer>    Framerate
+          Framerate to capture, if applicable (-1 for autodetect).
+      --pvr-bitrate <integer>    Bitrate
+          Bitrate to use (-1 for default).
+      --pvr-bitrate-peak <integer>
+                                 Bitrate peak
+          Peak bitrate in VBR mode.
+      --pvr-bitrate-mode {0 (vbr), 1 (cbr)}
+                                 Bitrate mode)
+          Bitrate mode to use (VBR or CBR).
+      --pvr-audio-bitmask <integer>
+                                 Audio bitmask
+          Bitmask that will get used by the audio part of the card.
+      --pvr-audio-volume <integer>
+                                 Volume
+          Audio volume (0-65535).
+      --pvr-channel <integer>    Channel
+          Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)
+
+ Standard filesystem directory input
+      --recursive {none,collapse,expand}
+                                 Subdirectory behavior
+          Select whether subdirectories must be expanded.
+none: subdirectories do not appear in the
+          playlist.
+collapse: subdirectories appear but are expanded on first play.
+expand: all subdirectories are
+          expanded.
+
+      --ignore-filetypes <string>
+                                 Ignored extensions
+          Files with these extensions will not be added to playlist when opening a directory.
+This is useful if you
+          add directories that contain playlist files for instance. Use a comma-separated list of extensions.
+
+ Microsoft Media Server (MMS) input
+      --mms-caching <integer>    Caching value in ms
+          Caching value for MMS streams. This value should be set in milliseconds.
+      --mms-timeout <integer>    TCP/UDP timeout (ms)
+          Amount of time (in ms) to wait before aborting network reception of data. Note that there will be 10
+          retries before completely giving up.
+      --mms-all, --no-mms-all    Force selection of all streams (default disabled)
+          MMS streams can contain several elementary streams, with different bitrates. You can choose to select all
+          of them. (default disabled)
+      --mms-maxbitrate <integer> Maximum bitrate
+          Select the stream with the maximum bitrate under that limit.
+
+ DVDRead Input (DVD without menu support)
+      --dvdread-angle <integer>  DVD angle
+          Default DVD angle.
+      --dvdread-caching <integer>
+                                 Caching value in ms
+          Caching value for DVDs. This value should be set in milliseconds.
+      --dvdread-css-method {title,disc,key}
+                                 Method used by libdvdcss for decryption
+          Set the method used by libdvdcss for key decryption.
+title: decrypted title key is guessed from the
+          encrypted sectors of the stream. Thus it should work with a file as well as the DVD device. But it
+          sometimes takes much time to decrypt a title key and may even fail. With this method, the key is only
+          checked at the beginning of each title, so it won't work if the key changes in the middle of a
+          title.
+disc: the disc key is first cracked, then all title keys can be decrypted instantly, which allows
+          us to check them often.
+key: the same as "disc" if you don't have a file with player keys at compilation
+          time. If you do, the decryption of the disc key will be faster with this method. It is the one that was
+          used by libcss.
+The default method is: key.
+
+ VCD input
+      --vcd-caching <integer>    Caching value in ms
+          Caching value for VCDs. This value should be set in milliseconds.
+
+ DVDnav Input
+      --dvdnav-angle <integer>   DVD angle
+          Default DVD angle.
+      --dvdnav-caching <integer> Caching value in ms
+          Caching value for DVDs. This value should be set in milliseconds.
+      --dvdnav-menu, --no-dvdnav-menu
+                                 Start directly in menu (default enabled)
+          Start the DVD directly in the main menu. This will try to skip all the useless warning introductions.
+          (default enabled)
+
+ UDP/RTP input
+      --udp-caching <integer>    Caching value in ms
+          Caching value for UDP streams. This value should be set in milliseconds.
+      --rtp-late <integer>       RTP reordering timeout in ms
+          VLC reorders RTP packets. The input will wait for late packets at most the time specified here (in
+          milliseconds).
+      --udp-auto-mtu, --no-udp-auto-mtu
+                                 Autodetection of MTU (default enabled)
+          Automatically detect the line's MTU. This will increase the size if truncated packets are found (default
+          enabled)
+
+ Text subtitles decoder
+      --subsdec-align {0 (Center), 1 (Left), 2 (Right)}
+                                 Subtitles justification
+          Set the justification of subtitles
+      --subsdec-encoding {Default,ASCII,UTF-8,,ISO-8859-1,CP1252,MacRoman,MacIceland,ISO-8859-15,,ISO-8859-2,CP1250,MacCentralEurope,MacCroatian,MacRomania,,ISO-8859-5,CP1251,MacCyrillic,MacUkraine,KOI8-R,KOI8-U,KOI8-RU,,ISO-8859-6,CP1256,MacArabic,,ISO-8859-7,CP1253,MacGreek,,ISO-8859-8,CP1255,MacHebrew,,ISO-8859-9,CP1254,MacTurkish,,ISO-8859-13,CP1257,,ISO-2022-JP,ISO-2022-JP-1,ISO-2022-JP-2,EUC-JP,SHIFT_JIS,,ISO-2022-CN,ISO-2022-CN-EXT,EUC-CN,EUC-TW,BIG5,BIG5-HKSCS,,ISO-2022-KR,EUC-KR,,MacThai,KOI8-T,,ISO-8859-3,ISO-8859-4,ISO-8859-10,ISO-8859-14,ISO-8859-16,,CP850,CP862,CP866,CP874,CP932,CP949,CP950,CP1133,CP1258,,Macintosh,,UTF-7,UTF-16,UTF-16BE,UTF-16LE,UTF-32,UTF-32BE,UTF-32LE,C99,JAVA,UCS-2,UCS-2BE,UCS-2LE,UCS-4,UCS-4BE,UCS-4LE,,HZ,GBK,GB18030,JOHAB,ARMSCII-8,Georgian-Academy,Georgian-PS,TIS-620,MuleLao-1,VISCII,TCVN,HPROMAN8,NEXTSTEP}
+                                 Subtitles text encoding
+          Set the encoding used in text subtitles
+      --subsdec-autodetect-utf8, --no-subsdec-autodetect-utf8
+                                 UTF-8 subtitles autodetection (default enabled)
+          This enables automatic detection of UTF-8 encoding within subtitles files. (default enabled)
+      --subsdec-formatted, --no-subsdec-formatted
+                                 Formatted Subtitles (default enabled)
+          Some subtitle formats allow for text formatting. VLC partly implements this, but you can choose to
+          disable all formatting. (default enabled)
+
+ Teletext subtitles decoder
+      --telx-override-page <integer>
+                                 Override page
+          Override the indicated page, try this if your subtitles don't appear (-1 = autodetect from TS, 0 =
+          autodetect from teletext, >0 = actual page number, usually 888 or 889).
+      --telx-ignore-subtitle-flag, --no-telx-ignore-subtitle-flag
+                                 Ignore subtitle flag (default disabled)
+          Ignore the subtitle flag, try this if your subtitles don't appear. (default disabled)
+      --telx-french-workaround, --no-telx-french-workaround
+                                 Workaround for France (default disabled)
+          Some French channels do not flag their subtitling pages correctly due to a historical interpretation
+          mistake. Try using this wrong interpretation if your subtitles don't appear. (default disabled)
+
+ Vorbis audio decoder
+      --sout-vorbis-quality <integer>
+                                 Encoding quality
+          Enforce a quality between 1 (low) and 10 (high), instead of specifying a particular bitrate. This will
+          produce a VBR stream.
+      --sout-vorbis-max-bitrate <integer>
+                                 Maximum encoding bitrate
+          Maximum bitrate in kbps. This is useful for streaming applications.
+      --sout-vorbis-min-bitrate <integer>
+                                 Minimum encoding bitrate
+          Minimum bitrate in kbps. This is useful for encoding for a fixed-size channel.
+      --sout-vorbis-cbr, --no-sout-vorbis-cbr
+                                 CBR encoding (default disabled)
+          Force a constant bitrate encoding (CBR). (default disabled)
+
+ Libtwolame audio encoder
+      --sout-twolame-quality <float>
+                                 Encoding quality
+          Force a specific encoding quality between 0.0 (high) and 50.0 (low), instead of specifying a particular
+          bitrate. This will produce a VBR stream.
+      --sout-twolame-mode {0 (Stereo), 1 (Dual mono), 2 (Joint stereo)}
+                                 Stereo mode
+          Handling mode for stereo streams
+      --sout-twolame-vbr, --no-sout-twolame-vbr
+                                 VBR mode (default disabled)
+          Use Variable BitRate. Default is to use Constant BitRate (CBR). (default disabled)
+      --sout-twolame-psy <integer>
+                                 Psycho-acoustic model
+          Integer from -1 (no model) to 4.
+
+ Philips OGT (SVCD subtitle) decoder
+      --svcdsub-debug <integer>  Enable debug
+          This integer when viewed in binary is a debugging mask
+calls                 1
+packet assembly info  2
+
+
+ DVB subtitles decoder
+      --dvbsub-position {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Subpicture position
+          You can enforce the subpicture position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can
+          also use combinations of these values, e.g. 6=top-right).
+      --dvbsub-x <integer>       Decoding X coordinate
+          X coordinate of the rendered subtitle
+      --dvbsub-y <integer>       Decoding Y coordinate
+          Y coordinate of the rendered subtitle
+      --sout-dvbsub-x <integer>  Encoding X coordinate
+          X coordinate of the encoded subtitle
+      --sout-dvbsub-y <integer>  Encoding Y coordinate
+          Y coordinate of the encoded subtitle
+
+ Fake video decoder
+      --fake-file <string>       Image file
+          Path of the image file for fake input.
+      --fake-width <integer>     Video width
+          Output video width.
+      --fake-height <integer>    Video height
+          Output video height.
+      --fake-keep-ar, --no-fake-keep-ar
+                                 Keep aspect ratio (default disabled)
+          Consider width and height as maximum values. (default disabled)
+      --fake-aspect-ratio <string>
+                                 Background aspect ratio
+          Aspect ratio of the image file (4:3, 16:9). Default is square pixels.
+      --fake-deinterlace, --no-fake-deinterlace
+                                 Deinterlace video (default disabled)
+          Deinterlace the image after loading it. (default disabled)
+      --fake-deinterlace-module {deinterlace,ffmpeg-deinterlace}
+                                 Deinterlace module
+          Deinterlace module to use.
+
+ FFmpeg audio/video decoder/encoder ((MS)MPEG4,SVQ1,H263,WMV,WMA)
+      --ffmpeg-dr, --no-ffmpeg-dr
+                                 Direct rendering (default enabled)
+          Direct rendering (default enabled)
+      --ffmpeg-error-resilience <integer>
+                                 Error resilience
+          Ffmpeg can do error resilience.
+However, with a buggy encoder (such as the ISO MPEG-4 encoder from M$)
+          this can produce a lot of errors.
+Valid values range from 0 to 4 (0 disables all errors resilience).
+      --ffmpeg-workaround-bugs <integer>
+                                 Workaround bugs
+          Try to fix some bugs:
+1  autodetect
+2  old msmpeg4
+4  xvid interlaced
+8  ump4 
+16 no padding
+32 ac vlc
+64
+          Qpel chroma.
+This must be the sum of the values. For example, to fix "ac vlc" and "ump4", enter 40.
+      --ffmpeg-hurry-up, --no-ffmpeg-hurry-up
+                                 Hurry up (default disabled)
+          The decoder can partially decode or skip frame(s) when there is not enough time. It's useful with low CPU
+          power but it can produce distorted pictures. (default disabled)
+      --ffmpeg-vismv <integer>   Visualize motion vectors
+          You can overlay the motion vectors (arrows showing how the images move) on the image. This value is a
+          mask, based on these values:
+1 - visualize forward predicted MVs of P frames
+2 - visualize forward
+          predicted MVs of B frames
+4 - visualize backward predicted MVs of B frames
+To visualize all vectors, the
+          value should be 7.
+      --ffmpeg-lowres <integer>  Low resolution decoding
+          Only decode a low resolution version of the video. This requires less processing power
+      --ffmpeg-skiploopfilter {0 (None), 1 (Non-ref), 2 (Bidir), 3 (Non-key), 4 (All)}
+                                 Skip the loop filter for H.264 decoding
+          Skipping the loop filter (aka deblocking) usually has a detrimental effect on quality. However it
+          provides a big speedup for high definition streams.
+      --ffmpeg-pp-q <integer>    Post processing quality
+          Quality of post processing. Valid range is 0 to 6
+Higher levels require considerable more CPU power, but
+          produce better looking pictures.
+      --ffmpeg-pp-name <string>  FFmpeg post processing filter chains
+          <filterName>[:<option>[:<option>...]][[,|/][-]<filterName>[:<option>...]]...
+long form
+          example:
+vdeblock:autoq/hdeblock:autoq/linblenddeint    default,-vdeblock
+short form
+          example:
+vb:a/hb:a/lb de,-vb
+more examples:
+tn:64:128:256
+Filters                        Options
+short 
+          long name       short   long option     Description
+*      *               a       autoq           cpu
+          power dependant enabler
+                       c       chrom           chrominance filtring enabled
+     
+                           y       nochrom         chrominance filtring disabled
+hb     hdeblock        (2
+          Threshold)           horizontal deblocking filter
+       1. difference factor: default=64, higher -> more
+          deblocking
+       2. flatness threshold: default=40, lower -> more deblocking
+                       the
+          h & v deblocking filters share these
+                       so u cant set different thresholds for h /
+          v
+vb     vdeblock        (2 Threshold)           vertical deblocking filter
+h1     x1hdeblock            
+                           Experimental h deblock filter 1
+v1     x1vdeblock                             
+          Experimental v deblock filter 1
+dr     dering                                  Deringing filter
+al    
+          autolevels                              automatic brightness / contrast
+                       f      
+          fullyrange      stretch luminance to (0..255)
+lb     linblenddeint                           linear blend
+          deinterlacer
+li     linipoldeint                            linear interpolating deinterlace
+ci    
+          cubicipoldeint                          cubic interpolating deinterlacer
+md     mediandeint              
+                        median deinterlacer
+fd     ffmpegdeint                             ffmpeg deinterlacer
+de  
+            default                                 hb:a,vb:a,dr:a,al
+fa     fast                                  
+           h1:a,v1:a,dr:a,al
+tn     tmpnoise        (3 Thresholds)          Temporal Noise Reducer
+                
+                1. <= 2. <= 3.          larger -> stronger filtering
+fq     forceQuant      <quantizer>            
+          Force quantizer
+
+      --ffmpeg-debug <integer>   Debug mask
+          Set ffmpeg debug mask
+      --sout-ffmpeg-hq {rd,bits,simple}
+                                 Quality level
+          Quality level for the encoding of motions vectors (this can slow down the encoding very much).
+      --sout-ffmpeg-keyint <integer>
+                                 Ratio of key frames
+          Number of frames that will be coded for one key frame.
+      --sout-ffmpeg-bframes <integer>
+                                 Ratio of B frames
+          Number of B frames that will be coded between two reference frames.
+      --sout-ffmpeg-hurry-up, --no-sout-ffmpeg-hurry-up
+                                 Hurry up (default disabled)
+          The encoder can make on-the-fly quality tradeoffs if your CPU can't keep up with the encoding rate. It
+          will disable trellis quantization, then the rate distortion of motion vectors (hq), and raise the noise
+          reduction threshold to ease the encoder's task. (default disabled)
+      --sout-ffmpeg-interlace, --no-sout-ffmpeg-interlace
+                                 Interlaced encoding (default disabled)
+          Enable dedicated algorithms for interlaced frames. (default disabled)
+      --sout-ffmpeg-interlace-me, --no-sout-ffmpeg-interlace-me
+                                 Interlaced motion estimation (default enabled)
+          Enable interlaced motion estimation algorithms. This requires more CPU. (default enabled)
+      --sout-ffmpeg-vt <integer> Video bitrate tolerance
+          Video bitrate tolerance in kbit/s.
+      --sout-ffmpeg-pre-me, --no-sout-ffmpeg-pre-me
+                                 Pre-motion estimation (default disabled)
+          Enable the pre-motion estimation algorithm. (default disabled)
+      --sout-ffmpeg-strict-rc, --no-sout-ffmpeg-strict-rc
+                                 Strict rate control (default disabled)
+          Enable the strict rate control algorithm. (default disabled)
+      --sout-ffmpeg-rc-buffer-size <integer>
+                                 Rate control buffer size
+          Rate control buffer size (in kbytes). A bigger buffer will allow for better rate control, but will cause
+          a delay in the stream.
+      --sout-ffmpeg-rc-buffer-aggressivity <float>
+                                 Rate control buffer aggressiveness
+          Rate control buffer aggressiveness.
+      --sout-ffmpeg-i-quant-factor <float>
+                                 I quantization factor
+          Quantization factor of I frames, compared with P frames (for instance 1.0 => same qscale for I and P
+          frames).
+      --sout-ffmpeg-noise-reduction <integer>
+                                 Noise reduction
+          Enable a simple noise reduction algorithm to lower the encoding length and bitrate, at the expense of
+          lower quality frames.
+      --sout-ffmpeg-mpeg4-matrix, --no-sout-ffmpeg-mpeg4-matrix
+                                 MPEG4 quantization matrix (default disabled)
+          Use the MPEG4 quantization matrix for MPEG2 encoding. This generally yields a better looking picture,
+          while still retaining the compatibility with standard MPEG2 decoders. (default disabled)
+      --sout-ffmpeg-qmin <integer>
+                                 Minimum video quantizer scale
+          Minimum video quantizer scale.
+      --sout-ffmpeg-qmax <integer>
+                                 Maximum video quantizer scale
+          Maximum video quantizer scale.
+      --sout-ffmpeg-trellis, --no-sout-ffmpeg-trellis
+                                 Trellis quantization (default disabled)
+          Enable trellis quantization (rate distortion for block coefficients). (default disabled)
+      --sout-ffmpeg-qscale <float>
+                                 Fixed quantizer scale
+          A fixed video quantizer scale for VBR encoding (accepted values: 0.01 to 255.0).
+      --sout-ffmpeg-strict <integer>
+                                 Strict standard compliance
+          Force a strict standard compliance when encoding (accepted values: -1, 0, 1).
+      --sout-ffmpeg-lumi-masking <float>
+                                 Luminance masking
+          Raise the quantizer for very bright macroblocks (default: 0.0).
+      --sout-ffmpeg-dark-masking <float>
+                                 Darkness masking
+          Raise the quantizer for very dark macroblocks (default: 0.0).
+      --sout-ffmpeg-p-masking <float>
+                                 Motion masking
+          Raise the quantizer for macroblocks with a high temporal complexity (default: 0.0).
+      --sout-ffmpeg-border-masking <float>
+                                 Border masking
+          Raise the quantizer for macroblocks at the border of the frame (default: 0.0).
+      --sout-ffmpeg-luma-elim-threshold <integer>
+                                 Luminance elimination
+          Eliminates luminance blocks when the PSNR isn't much changed (default: 0.0). The H264 specification
+          recommends -4.
+      --sout-ffmpeg-chroma-elim-threshold <integer>
+                                 Chrominance elimination
+          Eliminates chrominance blocks when the PSNR isn't much changed (default: 0.0). The H264 specification
+          recommends 7.
+
+ Playlist
+      --playlist-autostart, --no-playlist-autostart
+                                 Auto start (default enabled)
+          Automatically start playing the playlist content once it's loaded.
+ (default enabled)
+      --m3u-extvlcopt, --no-m3u-extvlcopt
+                                 Enable parsing of EXTVLCOPT: options (default disabled)
+          Enable parsing of EXTVLCOPT: options in m3u playlists. This option is default disabled to prevent
+          untrusted sources using VLC options without the user's knowledge. (default disabled)
+      --shoutcast-show-adult, --no-shoutcast-show-adult
+                                 Show shoutcast adult content (default disabled)
+          Show NC17 rated video streams when using shoutcast video playlists. (default disabled)
+
+ MPEG-PS demuxer
+      --ps-trust-timestamps, --no-ps-trust-timestamps
+                                 Trust MPEG timestamps (default enabled)
+          Normally we use the timestamps of the MPEG files to calculate position and duration. However sometimes
+          this might not be usable. Disable this option to calculate from the bitrate instead. (default enabled)
+
+ DV (Digital Video) demuxer
+      --rawdv-hurry-up, --no-rawdv-hurry-up
+                                 Hurry up (default disabled)
+          The demuxer will advance timestamps if the input can't keep up with the rate. (default disabled)
+
+ MOD demuxer (libmodplug)
+      --mod-noisereduction, --no-mod-noisereduction
+                                 Noise reduction (default enabled)
+          Enable noise reduction algorithm (default enabled)
+      --mod-reverb, --no-mod-reverb
+                                 Reverb (default disabled)
+          Enable reverberation (default disabled)
+      --mod-reverb-level <integer>
+                                 Reverberation level
+          Reverberation level (from 0 to 100, default value is 0).
+      --mod-reverb-delay <integer>
+                                 Reverberation delay
+          Reverberation delay, in ms. Usual values are from to 40 to 200ms.
+      --mod-megabass, --no-mod-megabass
+                                 Mega bass (default disabled)
+          Enable megabass mode (default disabled)
+      --mod-megabass-level <integer>
+                                 Mega bass level
+          Megabass mode level (from 0 to 100, default value is 0).
+      --mod-megabass-range <integer>
+                                 Mega bass cutoff
+          Megabass mode cutoff frequency, in Hz.This is the maximum frequency for which the megabass effect
+          applies. Valid values are from 10 to 100 Hz
+      --mod-surround, --no-mod-surround
+                                 Surround (default disabled)
+          Surround (default disabled)
+      --mod-surround-level <integer>
+                                 Surround level
+          Surround effect level (from 0 to 100, default value is 0).
+      --mod-surround-delay <integer>
+                                 Surround delay (ms)
+          Surround delay, in ms. Usual values are from 5 to 40 ms
+
+ MPEG Transport Stream demuxer
+      --ts-extra-pmt <string>    Extra PMT
+          Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...]).
+      --ts-es-id-pid, --no-ts-es-id-pid
+                                 Set id of ES to PID (default enabled)
+          Set the internal ID of each elementary stream handled by VLC to the same value as the PID in the TS
+          stream, instead of 1, 2, 3, etc. Useful to do '#duplicate{..., select="es=<pid>"}'. (default enabled)
+      --ts-out <string>          Fast udp streaming
+          Sends TS to specific ip:port by udp (you must know what you are doing).
+      --ts-out-mtu <integer>     MTU for out mode
+          MTU for out mode.
+      --ts-csa-ck <string>       CSA ck
+          Control word for the CSA encryption algorithm
+      --ts-csa-pkt <integer>     Packet size in bytes to decrypt
+          Specify the size of the TS packet to decrypt. The decryption routines subtract the TS-header from the
+          value before decrypting. 
+      --ts-silent, --no-ts-silent
+                                 Silent mode (default disabled)
+          Do not complain on encrypted PES. (default disabled)
+      --ts-dump-file <string>    Filename of dump
+          Specify a filename where to dump the TS in.
+      --ts-dump-append, --no-ts-dump-append
+                                 Append (default disabled)
+          If the file exists and this option is selected, the existing file will not be overwritten. (default
+          disabled)
+      --ts-dump-size <integer>   Dump buffer size
+          Tweak the buffer size for reading and writing an integer number of packets.Specify the size of the buffer
+          here and not the number of packets.
+
+ MusePack demuxer
+      --mpc-replaygain-type {0 (None), 1 (Title), 2 (Album)}
+                                 Replay Gain type
+          Musepack can have a title-specific replay gain (volume control) or an album-specific one. Choose which
+          type you want to use
+
+ Text subtitles parser
+      --sub-fps <float>          Frames per second
+          Override the normal frames per second settings. This will only work with MicroDVD and SubRIP (SRT)
+          subtitles.
+      --sub-delay <integer>      Subtitles delay
+          Apply a delay to all subtitles (in 1/10s, eg 100 means 10s).
+      --sub-type {auto,microdvd,subrip,subviewer,ssa1,ssa2-4,ass,vplayer,sami,dvdsubtitle}
+                                 Subtitles format
+          Force the subtiles format. Valid values are : "microdvd", "subrip",  "ssa1", "ssa2-4", "ass", "vplayer"
+          "sami", "dvdsubtitle" and "auto" (meaning autodetection, this should always work).
+
+ File dumpper
+      --demuxdump-file <string>  Dump filename
+          Name of the file to which the raw stream will be dumped.
+      --demuxdump-append, --no-demuxdump-append
+                                 Append to existing file (default disabled)
+          If the file already exists, it will not be overwritten. (default disabled)
+
+ Matroska stream demuxer
+      --mkv-use-ordered-chapters, --no-mkv-use-ordered-chapters
+                                 Ordered chapters (default enabled)
+          Play ordered chapters as specified in the segment. (default enabled)
+      --mkv-use-chapter-codec, --no-mkv-use-chapter-codec
+                                 Chapter codecs (default enabled)
+          Use chapter codecs found in the segment. (default enabled)
+      --mkv-preload-local-dir, --no-mkv-preload-local-dir
+                                 Preload Directory (default enabled)
+          Preload matroska files from the same family in the same directory (not good for broken files). (default
+          enabled)
+      --mkv-seek-percent, --no-mkv-seek-percent
+                                 Seek based on percent not time (default disabled)
+          Seek based on percent not time. (default disabled)
+      --mkv-use-dummy, --no-mkv-use-dummy
+                                 Dummy Elements (default disabled)
+          Read and discard unknown EBML elements (not good for broken files). (default disabled)
+
+ H264 video demuxer
+      --h264-fps <float>         Frames per Second
+          Desired frame rate for the H264 stream.
+
+ AVI demuxer
+      --avi-interleaved, --no-avi-interleaved
+                                 Force interleaved method (default disabled)
+          Force interleaved method. (default disabled)
+      --avi-index {0 (Ask), 1 (Always fix), 2 (Never fix)}
+                                 Force index creation
+          Recreate a index for the AVI file. Use this if your AVI file is damaged or incomplete (not seekable).
+
+ RTP/RTSP/SDP demuxer (using Live555)
+      --rtsp-tcp, --no-rtsp-tcp  Use RTP over RTSP (TCP) (default disabled)
+          Use RTP over RTSP (TCP) (default disabled)
+      --rtp-client-port <integer>
+                                 Client port
+          Port to use for the RTP source of the session
+      --rtsp-http, --no-rtsp-http
+                                 Tunnel RTSP and RTP over HTTP (default disabled)
+          Tunnel RTSP and RTP over HTTP (default disabled)
+      --rtsp-http-port <integer> HTTP tunnel port
+          Port to use for tunneling the RTSP/RTP over HTTP.
+      --rtsp-caching <integer>   Caching value (ms)
+          Allows you to modify the default caching value for RTSP streams. This value should be set in millisecond
+          units.
+      --rtsp-kasenna, --no-rtsp-kasenna
+                                 Kasenna RTSP dialect (default disabled)
+          Kasenna servers use an old and unstandard dialect of RTSP. When you set this parameter, VLC will try this
+          dialect for communication. In this mode you cannot connect to normal RTSP servers. (default disabled)
+      --rtsp-user <string>       RTSP user name
+          Allows you to modify the user name that will be used for authenticating the connection.
+      --rtsp-pwd <string>        RTSP password
+          Allows you to modify the password that will be used for the connection.
+
+ M-JPEG camera demuxer
+      --mjpeg-fps <float>        Frames per Second
+          This is the desired frame rate when playing MJPEG from a file. Use 0 (this is the default value) for a
+          live stream (from a camera).
+
+ Visualizer filter
+      --effect-list <string>     Effects list
+          A list of visual effect, separated by commas.
+Current effects include: dummy, scope, spectrum.
+      --effect-width <integer>   Video width
+          The width of the effects video window, in pixels.
+      --effect-height <integer>  Video height
+          The height of the effects video window, in pixels.
+      --visual-nbbands <integer> Number of bands
+          Number of bands used by spectrum analyzer, should be 20 or 80.
+      --visual-separ <integer>   Band separator
+          Number of blank pixels between bands.
+      --visual-amp <integer>     Amplification
+          This is a coefficient that modifies the height of the bands.
+      --visual-peaks, --no-visual-peaks
+                                 Enable peaks (default enabled)
+          Draw "peaks" in the spectrum analyzer. (default enabled)
+      --spect-show-original, --no-spect-show-original
+                                 Enable original graphic spectrum (default disabled)
+          Enable the "flat" spectrum analyzer in the spectrometer. (default disabled)
+      --spect-show-base, --no-spect-show-base
+                                 Enable base (default enabled)
+          Defines whether to draw the base of the bands. (default enabled)
+      --spect-radius <integer>   Base pixel radius
+          Defines radius size in pixels, of base of bands(beginning).
+      --spect-sections <integer> Spectral sections
+          Determines how many sections of spectrum will exist.
+      --spect-color <integer>    V-plane color
+          YUV-Color cube shifting across the V-plane ( 0 - 127 ).
+      --spect-show-bands, --no-spect-show-bands
+                                 Enable bands (default enabled)
+          Draw bands in the spectrometer. (default enabled)
+      --spect-nbbands <integer>  Number of bands
+          Number of bands used by the spectrometer, from 20 to 80.
+      --spect-separ <integer>    Band separator
+          Number of blank pixels between bands.
+      --spect-amp <integer>      Amplification
+          This is a coefficient that modifies the height of the bands.
+      --spect-show-peaks, --no-spect-show-peaks
+                                 Enable peaks (default enabled)
+          Draw "peaks" in the spectrum analyzer. (default enabled)
+      --spect-peak-width <integer>
+                                 Peak extra width
+          Additions or subtractions of pixels on the peak width.
+      --spect-peak-height <integer>
+                                 Peak height
+          Total pixel height of the peak items.
+
+ MPEG-I/II video packetizer
+      --packetizer-mpegvideo-sync-iframe, --no-packetizer-mpegvideo-sync-iframe
+                                 Sync on Intra Frame (default disabled)
+          Normally the packetizer would sync on the next full frame. This flags instructs the packetizer to sync on
+          the first Intra Frame found. (default disabled)
+
+ DTS Coherent Acoustics audio decoder
+      --dts-dynrng, --no-dts-dynrng
+                                 DTS dynamic range compression (default enabled)
+          Dynamic range compression makes the loud sounds softer, and the soft sounds louder, so you can more
+          easily listen to the stream in a noisy environment without disturbing anyone. If you disable the dynamic
+          range compression the playback will be more adapted to a movie theater or a listening room. (default
+          enabled)
+
+ Headphone virtual spatialization effect
+      --headphone-dim <integer>  Characteristic dimension
+          Distance between front left speaker and listener in meters.
+      --headphone-compensate, --no-headphone-compensate
+                                 Compensate delay (default disabled)
+          The delay which is introduced by the physical algorithm may sometimes be disturbing for the
+          synchronization between lips-movement and speech. In case, turn this on to compensate. (default disabled)
+      --headphone-dolby, --no-headphone-dolby
+                                 No decoding of Dolby Surround (default disabled)
+          Dolby Surround encoded streams won't be decoded before being processed by this filter. Enabling this
+          setting is not recommended. (default disabled)
+
+ Parametric Equalizer
+      --param-eq-lowf <float>    Low freq (Hz)
+                --param-eq-lowgain <float> Low freq gain (Db)
+                --param-eq-highf <float>   High freq (Hz)
+                --param-eq-highgain <float>
+                                 High freq gain (Db)
+                --param-eq-f1 <float>      Freq 1 (Hz)
+                --param-eq-gain1 <float>   Freq 1 gain (Db)
+                --param-eq-q1 <float>      Freq 1 Q
+                --param-eq-f2 <float>      Freq 2 (Hz)
+                --param-eq-gain2 <float>   Freq 2 gain (Db)
+                --param-eq-q2 <float>      Freq 2 Q
+                --param-eq-f3 <float>      Freq 3 (Hz)
+                --param-eq-gain3 <float>   Freq 3 gain (Db)
+                --param-eq-q3 <float>      Freq 3 Q
+          
+ ATSC A/52 (AC-3) audio decoder
+      --a52-dynrng, --no-a52-dynrng
+                                 A/52 dynamic range compression (default enabled)
+          Dynamic range compression makes the loud sounds softer, and the soft sounds louder, so you can more
+          easily listen to the stream in a noisy environment without disturbing anyone. If you disable the dynamic
+          range compression the playback will be more adapted to a movie theater or a listening room. (default
+          enabled)
+      --a52-upmix, --no-a52-upmix
+                                 Enable internal upmixing (default disabled)
+          Enable the internal upmixing algorithm (not recommended). (default disabled)
+
+ Volume normalizer
+      --norm-buff-size <integer> Number of audio buffers
+          This is the number of audio buffers on which the power measurement is made. A higher number of buffers
+          will increase the response time of the filter to a spike but will make it less sensitive to short
+          variations.
+      --norm-max-level <float>   Max level
+          If the average power over the last N buffers is higher than this value, the volume will be normalized.
+          This value is a positive floating point number. A value between 0.5 and 10 seems sensible.
+
+ Equalizer with 10 bands
+      --equalizer-preset {flat,classical,club,dance,fullbass,fullbasstreble,fulltreble,headphones,largehall,live,party,pop,reggae,rock,ska,soft,softrock,techno}
+                                 Equalizer preset
+          Preset to use for the equalizer.
+      --equalizer-bands <string> Bands gain
+          Don't use presets, but manually specified bands. You need to provide 10 values between -20dB and 20dB,
+          separated by spaces, e.g. "0 2 4 2 0 -2 -4 -2 0"
+      --equalizer-2pass, --no-equalizer-2pass
+                                 Two pass (default disabled)
+          Filter the audio twice. This provides a more intense effect. (default disabled)
+      --equalizer-preamp <float> Global gain
+          Set the global gain in dB (-20 ... 20).
+
+ HTTP remote control interface
+      --http-host <string>       Host address
+          Address and port the HTTP interface will listen on. It defaults to all network interfaces (0.0.0.0). If
+          you want the HTTP interface to be available only on the local machine, enter 127.0.0.1
+      --http-src <string>        Source directory
+          Source directory
+      --http-charset <string>    Charset
+          Charset declared in Content-Type header (default UTF-8).
+      --http-handlers <string>   Handlers
+          List of handler extensions and executable paths (for instance: php=/usr/bin/php,pl=/usr/bin/perl).
+      --http-intf-cert <string>  Certificate file
+          HTTP interface x509 PEM certificate file (enables SSL).
+      --http-intf-key <string>   Private key file
+          HTTP interface x509 PEM private key file.
+      --http-intf-ca <string>    Root CA file
+          HTTP interface x509 PEM trusted root CA certificates file.
+      --http-intf-crl <string>   CRL file
+          HTTP interace Certificates Revocation List file.
+
+ Remote control interface
+      --rc-show-pos, --no-rc-show-pos
+                                 Show stream position (default disabled)
+          Show the current position in seconds within the stream from time to time. (default disabled)
+      --rc-fake-tty, --no-rc-fake-tty
+                                 Fake TTY (default disabled)
+          Force the rc module to use stdin as if it was a TTY. (default disabled)
+      --rc-unix <string>         UNIX socket command input
+          Accept commands over a Unix socket rather than stdin.
+      --rc-host <string>         TCP command input
+          Accept commands over a socket rather than stdin. You can set the address and port the interface will bind
+          to.
+
+ Network synchronisation
+      --netsync-master, --no-netsync-master
+                                 Act as master (default disabled)
+          Should act as the master client for the network synchronisation? (default disabled)
+      --netsync-master-ip <string>
+                                 Master client ip address
+          IP address of the master client used for the network synchronisation.
+
+ Show interface with mouse
+      --showintf-threshold <integer>
+                                 Threshold
+          Height of the zone triggering the interface.
+
+ VLM remote control interface
+      --telnet-host <string>     Host
+          This is the host on which the interface will listen. It defaults to all network interfaces (0.0.0.0). If
+          you want this interface to be available only on the local machine, enter "127.0.0.1".
+      --telnet-port <integer>    Port
+          This is the TCP port on which this interface will listen. It defaults to 4212.
+      --telnet-password <string> Password
+          A single administration password is used to protect this interface. The default value is "admin".
+
+ Mouse gestures control interface
+      --gestures-threshold <integer>
+                                 Motion threshold (10-100)
+          Amount of movement required for a mouse gesture to be recorded.
+      --gestures-button {left,middle,right}
+                                 Trigger button
+          Trigger button for mouse gestures.
+
+ RTSP VoD server
+      --rtsp-host <string>       RTSP host address
+          This defines the address, port and path the RTSP VOD server will listen on.
+Syntax is address:port/path.
+          The default is to listen on all interfaces (address 0.0.0.0), on port 554, with no path.
+ To listen only
+          on the local interface, use "localhost" as address.
+      --rtsp-throttle-users <integer>
+                                 Maximum number of connections
+          This limits the maximum number of clients that can connect to the RTSP VOD. 0 means no limit.
+
+ Freetype2 font renderer
+      --freetype-font <string>   Font
+          Filename for the font you want to use
+      --freetype-fontsize <integer>
+                                 Font size in pixels
+          This is the default size of the fonts that will be rendered on the video. If set to something different
+          than 0 this option will override the relative font size.
+      --freetype-opacity <integer>
+                                 Opacity
+          The opacity (inverse of transparency) of the text that will be rendered on the video. 0 = transparent,
+          255 = totally opaque. 
+      --freetype-color {0 (Black), 8421504 (Gray), 12632256 (Silver), 16777215 (White), 8388608 (Maroon), 16711680 (Red), 16711935 (Fuchsia), 16776960 (Yellow), 8421376 (Olive), 32768 (Green), 32896 (Teal), 65280 (Lime), 8388736 (Purple), 128 (Navy), 255 (Blue), 65535 (Aqua)}
+                                 Text default color
+          The color of the text that will be rendered on the video. This must be an hexadecimal (like HTML colors).
+          The first two chars are for red, then green, then blue. #000000 = black, #FF0000 = red, #00FF00 = green,
+          #FFFF00 = yellow (red + green), #FFFFFF = white
+      --freetype-rel-fontsize {20 (Smaller), 18 (Small), 16 (Normal), 12 (Large), 6 (Larger)}
+                                 Relative font size
+          This is the relative default size of the fonts that will be rendered on the video. If absolute font size
+          is set, relative size will be overriden.
+      --freetype-effect {1 (Background), 2 (Outline), 3 (Fat Outline)}
+                                 Font Effect
+          It is possible to apply effects to the rendered text to improve its readability.
+      --freetype-yuvp, --no-freetype-yuvp
+                                 Use YUVP renderer (default disabled)
+          This renders the font using "paletized YUV". This option is only needed if you want to encode into DVB
+          subtitles (default disabled)
+
+ GnuTLS TLS encryption layer
+      --tls-check-cert, --no-tls-check-cert
+                                 Check TLS/SSL server certificate validity (default enabled)
+          This ensures that the server certificate is valid (i.e. signed by an approved Certification Authority).
+          (default enabled)
+      --tls-check-hostname, --no-tls-check-hostname
+                                 Check TLS/SSL server hostname in certificate (default enabled)
+          This ensures that the server hostname in certificate matches the requested host name. (default enabled)
+      --gnutls-dh-bits <integer> Diffie-Hellman prime bits
+          This allows you to modify the Diffie-Hellman prime's number of bits, used for TLS or SSL-based
+          server-side encryption. This is generally not needed.
+      --gnutls-cache-expiration <integer>
+                                 Expiration time for resumed TLS sessions
+          It is possible to cache the resumed TLS sessions. This is the expiration time of the sessions stored in
+          this cache, in seconds.
+      --gnutls-cache-size <integer>
+                                 Number of resumed TLS sessions
+          This is the maximum number of resumed TLS sessions that the cache will hold.
+
+ File logging
+      --logfile <string>         Log filename
+          Specify the log filename.
+      --logmode {text,html,syslog}
+                                 Log format
+          Specify the log format. Available choices are "text" (default), "html", and "syslog" (special mode to
+          send to syslog instead of file.
+      --rrd-file <string>        RRD output file
+          Output data for RRDTool in this file.
+
+ Dummy interface function
+      --dummy-save-es, --no-dummy-save-es
+                                 Save raw codec data (default disabled)
+          Save the raw codec data if you have selected/forced the dummy decoder in the main options. (default
+          disabled)
+      --dummy-chroma <string>    Dummy image chroma format
+          Force the dummy video output to create images using a specific chroma format instead of trying to improve
+          performances by using the most efficient one.
+
+ Growl Notification Plugin
+      --growl-server <string>    Growl server
+          This is the host to which Growl notifications will be sent. By default, notifications are sent locally.
+      --growl-password <string>  Growl password
+          Growl password on the server.
+      --growl-port <integer>     Growl UDP port
+          Growl UDP port on the server.
+
+ Logo video filter
+      --logo-file <string>       Logo filenames
+          Full path of the image files to use. Format is <image>[,<delay in ms>[,<alpha>]][;<image>[,<delay>[,<alpha
+          >]]][;...]. If you only have one file, simply enter its filename.
+      --logo-x <integer>         X coordinate
+          X coordinate of the logo. You can move the logo by left-clicking it.
+      --logo-y <integer>         Y coordinate
+          Y coordinate of the logo. You can move the logo by left-clicking it.
+      --logo-delay <integer>     Logo individual image time in ms
+          Individual image display time of 0 - 60000 ms.
+      --logo-repeat <integer>    Logo animation # of loops
+          Number of loops for the logo animation.1 = continuous, 0 = disabled
+      --logo-transparency <integer>
+                                 Transparency of the logo
+          Logo transparency value (from 0 for full transparency to 255 for full opacity).
+      --logo-position {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Logo position
+          Enforce the logo position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use
+          combinations of these values, eg 6 = top-right).
+
+ Clone video filter
+      --clone-count <integer>    Number of clones
+          Number of video windows in which to clone the video.
+      --clone-vout-list <string> Video output modules
+          You can use specific video output modules for the clones. Use a comma-separated list of modules.
+
+ RSS and Atom feed display
+      --rss-urls <string>        Feed URLs
+          RSS/Atom feed '|' (pipe) seperated URLs.
+      --rss-x <integer>          X offset
+          X offset, from the left screen edge.
+      --rss-y <integer>          Y offset
+          Y offset, down from the top.
+      --rss-position {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Text position
+          You can enforce the text position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom; you can also
+          use combinations of these values, eg 6 = top-right).
+      --rss-opacity <integer>    Opacity
+          Opacity (inverse of transparency) of overlay text. 0 = transparent, 255 = totally opaque.
+      --rss-color {-268435456 (Default), 0 (Black), 8421504 (Gray), 12632256 (Silver), 16777215 (White), 8388608 (Maroon), 16711680 (Red), 16711935 (Fuchsia), 16776960 (Yellow), 8421376 (Olive), 32768 (Green), 32896 (Teal), 65280 (Lime), 8388736 (Purple), 128 (Navy), 255 (Blue), 65535 (Aqua)}
+                                 Color
+          Color of the text that will be rendered on the video. This must be an hexadecimal (like HTML colors). The
+          first two chars are for red, then green, then blue. #000000 = black, #FF0000 = red, #00FF00 = green,
+          #FFFF00 = yellow (red + green), #FFFFFF = white
+      --rss-size <integer>       Font size, pixels
+          Font size, in pixels. Default is -1 (use default font size).
+      --rss-speed <integer>      Speed of feeds
+          Speed of the RSS/Atom feeds (bigger is slower).
+      --rss-length <integer>     Max length
+          Maximum number of characters displayed on the screen.
+      --rss-ttl <integer>        Refresh time
+          Number of seconds between each forced refresh of the feeds. 0 means that the feeds are never updated.
+      --rss-images, --no-rss-images
+                                 Feed images (default enabled)
+          Display feed images if available. (default enabled)
+
+ Crop video filter
+      --crop-geometry <string>   Crop geometry (pixels)
+          Set the geometry of the zone to crop. This is set as <width> x <height> + <left offset> + <top offset>.
+      --autocrop, --no-autocrop  Automatic cropping (default disabled)
+          Automatic black border cropping. (default disabled)
+
+ Marquee display
+      --marq-marquee <string>    Text
+          Marquee text to display.
+      --marq-x <integer>         X offset
+          X offset, from the left screen edge.
+      --marq-y <integer>         Y offset
+          Y offset, down from the top.
+      --marq-position <integer>  Marquee position
+          You can enforce the marquee position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can
+          also use combinations of these values, eg 6 = top-right).
+      --marq-opacity <integer>   Opacity
+          Opacity (inverse of transparency) of overlayed text. 0 = transparent, 255 = totally opaque. 
+      --marq-color {-268435456 (Default), 0 (Black), 8421504 (Gray), 12632256 (Silver), 16777215 (White), 8388608 (Maroon), 16711680 (Red), 16711935 (Fuchsia), 16776960 (Yellow), 8421376 (Olive), 32768 (Green), 32896 (Teal), 65280 (Lime), 8388736 (Purple), 128 (Navy), 255 (Blue), 65535 (Aqua)}
+                                 Color
+          Color of the text that will be rendered on the video. This must be an hexadecimal (like HTML colors). The
+          first two chars are for red, then green, then blue. #000000 = black, #FF0000 = red, #00FF00 = green,
+          #FFFF00 = yellow (red + green), #FFFFFF = white
+      --marq-size <integer>      Font size, pixels
+          Font size, in pixels. Default is -1 (use default font size).
+      --marq-timeout <integer>   Timeout
+          Number of milliseconds the marquee must remain displayed. Default value is 0 (remains forever).
+
+ Motion blur filter
+      --blur-factor <integer>    Blur factor (1-127)
+          The degree of blurring from 1 to 127.
+
+ Image properties filter
+      --contrast <float>         Image contrast (0-2)
+          Set the image contrast, between 0 and 2. Defaults to 1.
+      --brightness <float>       Image brightness (0-2)
+          Set the image brightness, between 0 and 2. Defaults to 1.
+      --hue <integer>            Image hue (0-360)
+          Set the image hue, between 0 and 360. Defaults to 0.
+      --saturation <float>       Image saturation (0-3)
+          Set the image saturation, between 0 and 3. Defaults to 1.
+      --gamma <float>            Image gamma (0-10)
+          Set the image gamma, between 0.01 and 10. Defaults to 1.
+      --brightness-threshold, --no-brightness-threshold
+                                 Brightness threshold (default disabled)
+          When this mode is enabled, pixels will be shown as black or white. The threshold value will be the
+          brighness defined below. (default disabled)
+
+ Mosaic video sub filter
+      --mosaic-alpha <integer>   Transparency
+          Transparency of the mosaic foreground pictures. 0 means transparent, 255 opaque (default).
+      --mosaic-height <integer>  Height
+          Total height of the mosaic, in pixels.
+      --mosaic-width <integer>   Width
+          Total width of the mosaic, in pixels.
+      --mosaic-align {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Mosaic alignment
+          You can enforce the mosaic alignment on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can
+          also use combinations of these values, eg 6 = top-right).
+      --mosaic-xoffset <integer> Top left corner X coordinate
+          X Coordinate of the top-left corner of the mosaic.
+      --mosaic-yoffset <integer> Top left corner Y coordinate
+          Y Coordinate of the top-left corner of the mosaic.
+      --mosaic-borderw <integer> Border width
+          Width in pixels of the border between miniatures.
+      --mosaic-borderh <integer> Border height
+          Height in pixels of the border between miniatures.
+      --mosaic-position {0 (auto), 1 (fixed)}
+                                 Positioning method
+          Positioning method for the mosaic. auto: automatically choose the best number of rows and columns. fixed:
+          use the user-defined number of rows and columns.
+      --mosaic-rows <integer>    Number of rows
+          Number of image rows in the mosaic (only used if positionning method is set to "fixed".
+      --mosaic-cols <integer>    Number of columns
+          Number of image columns in the mosaic (only used if positionning method is set to "fixed".
+      --mosaic-keep-aspect-ratio, --no-mosaic-keep-aspect-ratio
+                                 Keep aspect ratio (default disabled)
+          Keep the original aspect ratio when resizing mosaic elements. (default disabled)
+      --mosaic-keep-picture, --no-mosaic-keep-picture
+                                 Keep original size (default disabled)
+          Keep the original size of mosaic elements. (default disabled)
+      --mosaic-order <string>    Elements order
+          You can enforce the order of the elements on the mosaic. You must give a comma-separated list of picture
+          ID(s).These IDs are assigned in the "mosaic-bridge" module.
+      --mosaic-delay <integer>   Delay
+          Pictures coming from the mosaic elements will be delayed according to this value (in milliseconds). For
+          high values you will need to raise caching at input.
+      --mosaic-bs, --no-mosaic-bs
+                                 Bluescreen (default disabled)
+          This effect, also known as "greenscreen" or "chroma key" blends the "blue parts" of the foreground images
+          of the mosaic on the background (like wheather forecast presenters). You can choose the "key" color for
+          blending (blue by default). (default disabled)
+      --mosaic-bsu <integer>     Bluescreen U value
+          "U" value for the bluescreen key color (in YUV values). From 0 to 255. Defaults to 120 for blue.
+      --mosaic-bsv <integer>     Bluescreen V value
+          "V" value for the bluescreen key color (in YUV values). From 0 to 255. Defaults to 90 for blue.
+      --mosaic-bsut <integer>    Bluescreen U tolerance
+          Tolerance of the bluescreen blender on color variations for the U plane. A value between 10 and 20 seems
+          sensible.
+      --mosaic-bsvt <integer>    Bluescreen V tolerance
+          Tolerance of the bluescreen blender on color variations for the V plane. A value between 10 and 20 seems
+          sensible.
+
+ On Screen Display menu
+      --osdmenu-x <integer>      X coordinate
+          You can move the OSD menu by left-clicking on it.
+      --osdmenu-y <integer>      Y coordinate
+          You can move the OSD menu by left-clicking on it.
+      --osdmenu-position {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Menu position
+          You can enforce the OSD menu position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can
+          also use combinations of these values, eg. 6 = top-right).
+      --osdmenu-file <string>    Configuration file
+          Configuration file for the OSD Menu
+      --osdmenu-file-path <string>
+                                 Path to OSD menu images
+          Path to the OSD menu images. This will override the path defined in the OSD configuration file.
+      --osdmenu-timeout <integer>
+                                 Menu timeout
+          OSD menu pictures get a default timeout of 15 seconds added to their remaining time. This will ensure
+          that they are at least the specified time visible.
+      --osdmenu-update <integer> Menu update interval
+          The default is to update the OSD menu picture every 200 ms. Shorten the update time for environments that
+          experience transmissions errors. Be careful with this option as encoding OSD menu pictures is very
+          computing intensive. The range is 0 - 1000 ms.
+
+ Motion detect video filter
+      --motiondetect-history <integer>
+                                 History parameter
+          The umber of frames used for detection.
+      --motiondetect-description <string>
+                                 Description file
+          A file containing a simple playlist
+
+ Video transformation filter
+      --transform-type {90,180,270,hflip,vflip}
+                                 Transform type
+          One of '90', '180', '270', 'hflip' and 'vflip'
+
+ Deinterlacing video filter
+      --deinterlace-mode {discard,blend,mean,bob,linear,x}
+                                 Deinterlace mode
+          Deinterlace method to use for local playback.
+      --sout-deinterlace-mode {discard,blend,mean,bob,linear,x}
+                                 Streaming deinterlace mode
+          Deinterlace method to use for streaming.
+
+ Time display sub filter
+      --time-format <string>     Time format string (%Y%m%d %H%M%S)
+          Time format string (%Y = year, %m = month, %d = day, %H = hour, %M = minute, %S = second).
+      --time-x <integer>         X offset
+          X offset, from the left screen edge
+      --time-y <integer>         Y offset
+          Y offset, down from the top
+      --time-position {0 (Center), 1 (Left), 2 (Right), 4 (Top), 8 (Bottom), 5 (Top-Left), 6 (Top-Right), 9 (Bottom-Left), 10 (Bottom-Right)}
+                                 Text position
+          You can enforce the text position on the video (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also
+          use combinations of these values, e.g. 6 = top-right).
+      --time-opacity <integer>   Opacity
+          Opacity (inverse of transparency) of overlay text. 0 = transparent, 255 = totally opaque.
+      --time-color {-268435456 (Default), 0 (Black), 8421504 (Gray), 12632256 (Silver), 16777215 (White), 8388608 (Maroon), 16711680 (Red), 16711935 (Fuchsia), 16776960 (Yellow), 8421376 (Olive), 32768 (Green), 32896 (Teal), 65280 (Lime), 8388736 (Purple), 128 (Navy), 255 (Blue), 65535 (Aqua)}
+                                 Color
+          Color of the text that will be rendered on the video. This must be an hexadecimal (like HTML colors). The
+          first two chars are for red, then green, then blue. #000000 = black, #FF0000 = red, #00FF00 = green,
+          #FFFF00 = yellow (red + green), #FFFFFF = white
+      --time-size <integer>      Font size, pixels
+          Font size, in pixels. Default is -1 (use default font size).
+
+ Wall video filter
+      --wall-cols <integer>      Number of columns
+          Number of horizontal windows in which to split the video.
+      --wall-rows <integer>      Number of rows
+          Number of vertical windows in which to split the video.
+      --wall-active <string>     Active windows
+          Comma-separated list of active windows, defaults to all
+      --wall-element-aspect <string>
+                                 Element aspect ratio
+          Aspect ratio of the individual displays building the wall.
+
+ Distort video filter
+      --distort-mode {wave,ripple,gradient,edge,hough,psychedelic}
+                                 Distort mode
+          Distort mode, one of "wave", "ripple", "gradient", "edge", "hough" and "psychedelic".
+      --distort-gradient-type <integer>
+                                 Gradient image type
+          Gradient image type (0 or 1). 0 will turn the image to white while 1 will keep colors.
+      --distort-cartoon, --no-distort-cartoon
+                                 Apply cartoon effect (default enabled)
+          Apply cartoon effect. It is only used by "gradient" and "edge". (default enabled)
+
+ Podcasts
+      --podcast-urls <string>    Podcast URLs list
+          Enter the list of podcasts to retrieve, separated by '|' (pipe).
+
+ Shoutcast radio listings
+
+ SAP Announcements
+      --sap-addr <string>        SAP multicast address
+          The SAP module normally chooses itself the right addresses to listen to. However, you can specify a
+          specific address.
+      --sap-ipv4, --no-sap-ipv4  IPv4 SAP (default enabled)
+          Listen to IPv4 announcements on the standard address. (default enabled)
+      --sap-ipv6, --no-sap-ipv6  IPv6 SAP (default enabled)
+          Listen to IPv6 announcements on the standard addresses. (default enabled)
+      --sap-timeout <integer>    SAP timeout (seconds)
+          Delay after which SAP items get deleted if no new announcement is received.
+      --sap-parse, --no-sap-parse
+                                 Try to parse the announce (default enabled)
+          This enables actual parsing of the announces by the SAP module. Otherwise, all announcements are parsed
+          by the "livedotcom" (RTP/RTSP) module. (default enabled)
+      --sap-strict, --no-sap-strict
+                                 SAP Strict mode (default disabled)
+          When this is set, the SAP parser will discard some non-compliant announcements. (default disabled)
+      --sap-timeshift, --no-sap-timeshift
+                                 Allow timeshifting (default disabled)
+          This automatically enables timeshifting for streams discovered through SAP announcements. (default
+          disabled)
+
+ Standard stream output
+      --sout-standard-access <string>
+                                 Output access method
+          This is the output access method that will be used.
+      --sout-standard-mux <string>
+                                 Output muxer
+          This is the muxer that will be used.
+      --sout-standard-dst <string>
+                                 Output destination
+          This is the destination (URL) that will be used for the stream.
+      --sout-standard-sap, --no-sout-standard-sap
+                                 SAP announcing (default disabled)
+          Announce this session with SAP. (default disabled)
+      --sout-standard-name <string>
+                                 Session name
+          This allows you to specify a name for the session, that will be announced if you choose to use SAP.
+      --sout-standard-group <string>
+                                 Session groupname
+          This allows you to specify a group for the session, that will be announced if you choose to use SAP.
+
+ Mosaic bridge stream output
+      --sout-mosaic-bridge-id <string>
+                                 ID
+          Specify an identifier string for this subpicture
+      --sout-mosaic-bridge-width <integer>
+                                 Video width
+          Output video width.
+      --sout-mosaic-bridge-height <integer>
+                                 Video height
+          Output video height.
+      --sout-mosaic-bridge-sar <string>
+                                 Sample aspect ratio
+          Sample aspect ratio of the destination (1:1, 3:4, 2:3).
+
+ Bridge stream output
+      --sout-bridge-out-id <integer>
+                                 ID
+          Integer identifier for this elementary stream. This will be used to "find" this stream later.
+      --sout-bridge-in-delay <integer>
+                                 Delay
+          Pictures coming from the picture video outputs will be delayed according to this value (in milliseconds,
+          should be >= 100 ms). For high values, you will need to raise caching values.
+      --sout-bridge-in-id-offset <integer>
+                                 ID Offset
+          Offset to add to the stream IDs specified in bridge_out to obtain the stream IDs bridge_in will register.
+
+ Display stream output
+      --sout-display-audio, --no-sout-display-audio
+                                 Enable audio (default enabled)
+          Enable/disable audio rendering. (default enabled)
+      --sout-display-video, --no-sout-display-video
+                                 Enable video (default enabled)
+          Enable/disable video rendering. (default enabled)
+      --sout-display-delay <integer>
+                                 Delay
+          Introduces a delay in the display of the stream.
+
+ RTP stream output
+      --sout-rtp-dst <string>    Destination
+          This is the output URL that will be used.
+      --sout-rtp-sdp <string>    SDP
+          This allows you to specify how the SDP (Session Descriptor) for this RTP session will be made available.
+          You must use an url: http://location to access the SDP via HTTP, rtsp://location for RTSP access, and
+          sap:// for the SDP to be announced via SAP.
+      --sout-rtp-mux <string>    Muxer
+          This allows you to specify the muxer used for the streaming output. Default is to use no muxer (standard
+          RTP stream).
+      --sout-rtp-name <string>   Session name
+          This is the name of the session that will be announced in the SDP (Session Descriptor).
+      --sout-rtp-description <string>
+                                 Session description
+          This allows you to give a broader description of the stream, that will be announced in the SDP (Session
+          Descriptor).
+      --sout-rtp-url <string>    Session URL
+          This allows you to give an URL with more details about the stream (often the website of the streaming
+          organization), that will be announced in the SDP (Session Descriptor).
+      --sout-rtp-email <string>  Session email
+          This allows you to give a contact mail address for the stream, that will be announced in the SDP (Session
+          Descriptor).
+      --sout-rtp-port <integer>  Port
+          This allows you to specify the base port for the RTP streaming.
+      --sout-rtp-port-audio <integer>
+                                 Audio port
+          This allows you to specify the default audio port for the RTP streaming.
+      --sout-rtp-port-video <integer>
+                                 Video port
+          This allows you to specify the default video port for the RTP streaming.
+      --sout-rtp-ttl <integer>   Time-To-Live (TTL)
+          This allows you to specify the Time-To-Live for the output stream.
+      --sout-rtp-mp4a-latm, --no-sout-rtp-mp4a-latm
+                                 MP4A LATM (default disabled)
+          This allows you to stream MPEG4 LATM audio streams (see RFC3016). (default disabled)
+
+ Elementary stream output
+      --sout-es-access <string>  Output access method
+          This is the default output access method that will be used.
+      --sout-es-access-audio <string>
+                                 Audio output access method
+          This is the output access method that will be used for audio.
+      --sout-es-access-video <string>
+                                 Video output access method
+          This is the output access method that will be used for video.
+      --sout-es-mux <string>     Output muxer
+          This is the default muxer method that will be used.
+      --sout-es-mux-audio <string>
+                                 Audio output muxer
+          This is the muxer that will be used for audio.
+      --sout-es-mux-video <string>
+                                 Video output muxer
+          This is the muxer that will be used for video.
+      --sout-es-dst <string>     Output URL
+          This is the default output URI.
+      --sout-es-dst-audio <string>
+                                 Audio output URL
+          This is the output URI that will be used for audio.
+      --sout-es-dst-video <string>
+                                 Video output URL
+          This is the output URI that will be used for video.
+
+ MPEG2 video switcher stream output
+      --sout-switcher-files <string>
+                                 Files
+          Full paths of the files separated by colons.
+      --sout-switcher-sizes <string>
+                                 Sizes
+          List of sizes separated by colons (720x576:480x576).
+      --sout-switcher-aspect-ratio <string>
+                                 Aspect ratio
+          Aspect ratio (4:3, 16:9).
+      --sout-switcher-port <integer>
+                                 Command UDP port
+          UDP port to listen to for commands.
+      --sout-switcher-command <integer>
+                                 Command
+          Initial command to execute.
+      --sout-switcher-gop <integer>
+                                 GOP size
+          Number of P frames between two I frames.
+      --sout-switcher-qscale <integer>
+                                 Quantizer scale
+          Fixed quantizer scale to use.
+      --sout-switcher-mute-audio, --no-sout-switcher-mute-audio
+                                 Mute audio (default enabled)
+          Mute audio when command is not 0. (default enabled)
+
+ Transcode stream output
+      --sout-transcode-venc <string>
+                                 Video encoder
+          This is the video encoder module that will be used (and its associated options).
+      --sout-transcode-vcodec <string>
+                                 Destination video codec
+          This is the video codec that will be used.
+      --sout-transcode-vb <integer>
+                                 Video bitrate
+          Target bitrate of the transcoded video stream.
+      --sout-transcode-scale <float>
+                                 Video scaling
+          Scale factor to apply to the video while transcoding (eg: 0.25)
+      --sout-transcode-fps <float>
+                                 Video frame-rate
+          Target output frame rate for the video stream.
+      --sout-transcode-hurry-up, --no-sout-transcode-hurry-up
+                                 Hurry up (default enabled)
+          The transcoder will drop frames if your CPU can't keep up with the encoding rate. (default enabled)
+      --sout-transcode-deinterlace, --no-sout-transcode-deinterlace
+                                 Deinterlace video (default disabled)
+          Deinterlace the video before encoding. (default disabled)
+      --sout-transcode-deinterlace-module {deinterlace,ffmpeg-deinterlace}
+                                 Deinterlace module
+          Specify the deinterlace module to use.
+      --sout-transcode-width <integer>
+                                 Video width
+          Output video width.
+      --sout-transcode-height <integer>
+                                 Video height
+          Output video height.
+      --sout-transcode-maxwidth <integer>
+                                 Maximum video width
+          Maximum output video width.
+      --sout-transcode-maxheight <integer>
+                                 Maximum video height
+          Maximum output video height.
+      --sout-transcode-vfilter <string>
+                                 Video filter
+          Video filters will be applied to the video streams (after overlays are applied). You must enter a
+          comma-separated list of filters.
+      --sout-transcode-croptop <integer>
+                                 Video crop (top)
+          Number of pixels to crop at the top of the video.
+      --sout-transcode-cropleft <integer>
+                                 Video crop (left)
+          Number of pixels to crop at the left of the video.
+      --sout-transcode-cropbottom <integer>
+                                 Video crop (bottom)
+          Number of pixels to crop at the bottom of the video.
+      --sout-transcode-cropright <integer>
+                                 Video crop (right)
+          Number of pixels to crop at the right of the video.
+      --sout-transcode-paddtop <integer>
+                                 Video padding (top)
+          Size of the black border to add at the top of the video.
+      --sout-transcode-paddleft <integer>
+                                 Video padding (left)
+          Size of the black border to add at the left of the video.
+      --sout-transcode-paddbottom <integer>
+                                 Video padding (bottom)
+          Size of the black border to add at the bottom of the video.
+      --sout-transcode-paddright <integer>
+                                 Video padding (right)
+          Size of the black border to add at the right of the video.
+      --sout-transcode-canvas-width <integer>
+                                 Video canvas width
+          This will automatically crod and pad the video to a specified width.
+      --sout-transcode-canvas-height <integer>
+                                 Video canvas height
+          This will automatically crod and pad the video to a specified height.
+      --sout-transcode-canvas-aspect <string>
+                                 Video canvas aspect ratio
+          This sets aspect (like 4:3) of the video canvas and letterbox the video accordingly.
+      --sout-transcode-aenc <string>
+                                 Audio encoder
+          This is the audio encoder module that will be used (and its associated options).
+      --sout-transcode-acodec <string>
+                                 Destination audio codec
+          This is the audio codec that will be used.
+      --sout-transcode-ab <integer>
+                                 Audio bitrate
+          Target bitrate of the transcoded audio stream.
+      --sout-transcode-channels <integer>
+                                 Audio channels
+          Number of audio channels in the transcoded streams.
+      --sout-transcode-samplerate <integer>
+                                 Audio sample rate
+          Sample rate of the transcoded audio stream (11250, 22500, 44100 or 48000).
+      --sout-transcode-audio-sync, --no-sout-transcode-audio-sync
+                                 Synchronise on audio track (default disabled)
+          This option will drop/duplicate video frames to synchronise the video track on the audio track. (default
+          disabled)
+      --sout-transcode-senc <string>
+                                 Subtitles encoder
+          This is the subtitles encoder module that will be used (and its associated options).
+      --sout-transcode-scodec <string>
+                                 Destination subtitles codec
+          This is the subtitles codec that will be used.
+      --sout-transcode-soverlay, --no-sout-transcode-soverlay
+                                 Destination subtitles codec (default disabled)
+          This is the subtitles codec that will be used. (default disabled)
+      --sout-transcode-sfilter <string>
+                                 Overlays
+          This allows you to add overlays (also known as "subpictures" on the transcoded video stream. The
+          subpictures produced by the filters will be overlayed directly onto the video. You must specify a
+          comma-separated list of subpicture modules
+      --sout-transcode-osd, --no-sout-transcode-osd
+                                 OSD menu (default disabled)
+          Stream the On Screen Display menu (using the osdmenu subpicture module). (default disabled)
+      --sout-transcode-threads <integer>
+                                 Number of threads
+          Number of threads used for the transcoding.
+      --sout-transcode-high-priority, --no-sout-transcode-high-priority
+                                 High priority (default disabled)
+          Runs the optional encoder thread at the OUTPUT priority instead of VIDEO. (default disabled)
+
+ Timeshift
+      --timeshift-granularity <integer>
+                                 Timeshift granularity
+          This is the size of the temporary files tha will be used to store the timeshifted streams.
+      --timeshift-dir <string>   Timeshift directory
+          Directory used to store the timeshift temporary files.
+      --timeshift-force, --no-timeshift-force
+                                 Force use of the timeshift module (default disabled)
+          Force use of the timeshift module even if the access declares that it can control pace or pause. (default
+          disabled)
+
+ Record
+      --record-path <string>     Record directory
+          Directory where the record will be stored.
+
+ Dump
+      --dump-force, --no-dump-force
+                                 Force use of dump module (default disabled)
+          Activate the dump module even for media with fast seeking. (default disabled)
+      --dump-margin <integer>    Maximum size of temporary file (Mb)
+          The dump module will abort dumping of the media if more than this much megabyte were performed.
+
+ Linux OSS audio output
+      --dspdev <string>          OSS DSP device
+      --oss-buggy, --no-oss-buggy
+                                 Try to work around buggy OSS drivers (default disabled)
+          Some buggy OSS drivers just don't like when their internal buffers are completely filled (the sound gets
+          heavily hashed). If you have one of these drivers, then you need to enable this option. (default disabled)
+
+ ALSA audio output
+      --alsadev {default}        ALSA Device Name

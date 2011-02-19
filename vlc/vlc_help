@@ -1,0 +1,163 @@
+Usage: vlc [options] [stream] ...
+You can specify multiple streams on the commandline. They will be enqueued in the playlist.
+The first item specified will be played first.
+
+Options-styles:
+  --option  A global option that is set for the duration of the program.
+   -option  A single letter version of a global --option.
+   :option  An option that only applies to the stream directly before it
+            and that overrides previous settings.
+
+Stream MRL syntax:
+  [[access][/demux]://]URL[@[title][:chapter][-[title][:chapter]]] [:option=value ...]
+
+  Many of the global --options can also be used as MRL specific :options.
+  Multiple :option=value pairs can be specified.
+
+URL syntax:
+  [file://]filename              Plain media file
+  http://ip:port/file            HTTP URL
+  ftp://ip:port/file             FTP URL
+  mms://ip:port/file             MMS URL
+  screen://                      Screen capture
+  [dvd://][device][@raw_device]  DVD device
+  [vcd://][device]               VCD device
+  [cdda://][device]              Audio CD device
+  udp:[[<source address>]@[<bind address>][:<bind port>]]
+                                 UDP stream sent by a streaming server
+  vlc:pause:<seconds>            Special item to pause the playlist for a certain time
+  vlc:quit                       Special item to quit VLC
+
+ Help options
+  -h, --help                     print help for VLC (can be combined with --advanced)
+  -H, --longhelp                 print help for VLC and all its modules (can be combined with --advanced)
+      --advanced                 print help for the advanced options
+      --help-verbose             ask for extra verbosity when displaying help
+  -l, --list                     print a list of available modules
+  -p, --module <string>          print help on a specific module (can be combined with --advanced)
+      --save-config              save the current command line options in the config
+      --reset-config             reset the current config to the default values
+      --config <string>          use alternate config file
+      --reset-plugins-cache      resets the current plugins cache
+      --version                  print version information
+
+ Audio
+      --audio, --no-audio        Enable audio (default enabled)
+      --volume <integer>         Default audio volume
+      --spdif, --no-spdif        Use S/PDIF when available (default disabled)
+      --force-dolby-surround {0 (Auto), 1 (On), 2 (Off)}
+                                 Force detection of Dolby Surround
+      --audio-filter <string>    Audio filters
+      --audio-visual <string>    Audio visualizations 
+
+ Video
+  -f, --fullscreen, --no-fullscreen
+                                 Fullscreen video output (default disabled)
+      --overlay, --no-overlay    Overlay video output (default enabled)
+      --video-on-top, --no-video-on-top
+                                 Always on top (default disabled)
+      --snapshot-path <string>   Video snapshot directory (or filename)
+      --snapshot-prefix <string> Video snapshot file prefix
+      --snapshot-format {png,jpg}
+                                 Video snapshot format
+      --snapshot-preview, --no-snapshot-preview
+                                 Display video snapshot preview (default enabled)
+      --snapshot-sequential, --no-snapshot-sequential
+                                 Use sequential numbers instead of timestamps (default disabled)
+      --crop <string>            Video cropping
+      --custom-crop-ratios <string>
+                                 Custom crop ratios list
+      --aspect-ratio <string>    Source aspect ratio
+      --custom-aspect-ratios <string>
+                                 Custom aspect ratios list
+      --vout-filter <string>     Video filter module
+
+ Subpictures
+      --osd, --no-osd            On Screen Display (default enabled)
+      --sub-file <string>        Use subtitle file
+      --sub-autodetect-file, --no-sub-autodetect-file
+                                 Autodetect subtitle files (default enabled)
+      --sub-filter <string>      Subpictures filter module
+      --audio-language <string>  Audio language
+      --sub-language <string>    Subtitle language
+      --input-repeat <integer>   Input repetitions
+      --dvd <string>             DVD device
+      --vcd <string>             VCD device
+      --cd-audio <string>        Audio CD device
+      --server-port <integer>    UDP port
+  -6, --ipv6, --no-ipv6          Force IPv6 (default disabled)
+  -4, --ipv4, --no-ipv4          Force IPv4 (default disabled)
+
+ Input
+      --access-filter <string>   Access filter module
+
+ Playlist
+  -Z, --random, --no-random      Play files randomly forever (default disabled)
+  -L, --loop, --no-loop          Repeat all (default disabled)
+  -R, --repeat, --no-repeat      Repeat current item (default disabled)
+      --play-and-stop, --no-play-and-stop
+                                 Play and stop (default disabled)
+      --open <string>            Default stream
+      --auto-preparse, --no-auto-preparse
+                                 Automatically preparse files (default enabled)
+  -S, --services-discovery <string>
+                                 Services discovery modules
+  -v, --verbose <integer>        Verbosity (0,1,2)
+      --advanced, --no-advanced  Show advanced options (default disabled)
+      --interact, --no-interact  Interface interaction (default enabled)
+      --show-intf, --no-show-intf
+                                 Show interface with mouse (default disabled)
+  -I, --intf <string>            Interface module
+      --extraintf <string>       Extra interface modules
+      --control <string>         Control interfaces
+
+ Hot keys
+      --key-fullscreen <integer> Fullscreen
+      --key-play-pause <integer> Play/Pause
+      --key-faster <integer>     Faster
+      --key-slower <integer>     Slower
+      --key-next <integer>       Next
+      --key-prev <integer>       Previous
+      --key-stop <integer>       Stop
+      --key-jump-extrashort <integer>
+                                 Very short backwards jump
+      --key-jump+extrashort <integer>
+                                 Very short forward jump
+      --key-jump-short <integer> Short backwards jump
+      --key-jump+short <integer> Short forward jump
+      --key-jump-medium <integer>
+                                 Medium backwards jump
+      --key-jump+medium <integer>
+                                 Medium forward jump
+      --key-jump-long <integer>  Long backwards jump
+      --key-jump+long <integer>  Long forward jump
+      --key-quit <integer>       Quit
+      --key-vol-up <integer>     Volume up
+      --key-vol-down <integer>   Volume down
+      --key-vol-mute <integer>   Mute
+      --key-audio-track <integer>
+                                 Cycle audio track
+      --key-subtitle-track <integer>
+                                 Cycle subtitle track
+      --key-aspect-ratio <integer>
+                                 Cycle source aspect ratio
+      --key-crop <integer>       Cycle video crop
+      --key-deinterlace <integer>
+                                 Cycle deinterlace modes
+      --extrashort-jump-size <integer>
+                                 Very short jump length
+      --short-jump-size <integer>
+                                 Short jump length
+      --medium-jump-size <integer>
+                                 Medium jump length
+      --long-jump-size <integer> Long jump length
+      --bookmark1 <string>       Playlist bookmark 1
+      --bookmark2 <string>       Playlist bookmark 2
+      --bookmark3 <string>       Playlist bookmark 3
+      --bookmark4 <string>       Playlist bookmark 4
+      --bookmark5 <string>       Playlist bookmark 5
+      --bookmark6 <string>       Playlist bookmark 6
+      --bookmark7 <string>       Playlist bookmark 7
+      --bookmark8 <string>       Playlist bookmark 8
+      --bookmark9 <string>       Playlist bookmark 9
+      --bookmark10 <string>      Playlist bookmark 10

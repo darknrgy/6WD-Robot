@@ -42,7 +42,8 @@ int main( void ){
 	// enable interrupts
 	sei();
 
-	float diff = 0;
+	float diff = 0, battery_voltage = 0, motor_driver_temp = 0;
+
 
 	// loop forever
 	while(1){
@@ -72,6 +73,12 @@ int main( void ){
 			diff = diff * 0.00 + ((uint16_t) motor1->pwm - motor2->pwm) * 1.00;
 
 			cmd_send_debug16( 'd', (uint16_t) (abs(diff)) );
+
+			// also get some analog inputs
+			motor_driver_temp = analoginput_get(MOTORDRIVER_TEMP)  * (5/1024.0f) * 1000;
+			battery_voltage = analoginput_get(BATTERY_VOLTAGE)
+
+
 
 			
 
