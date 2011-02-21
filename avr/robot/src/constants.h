@@ -14,6 +14,10 @@
 // ADC Channels
 #define MOTORDRIVER_TEMP	0x02
 #define BATTERY_VOLTAGE		0X01
+#define LEFT_MOTOR_AMPS		0x06
+#define RIGHT_MOTOR_AMPS	0x07
+
+
 
 
 #endif

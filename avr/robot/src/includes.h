@@ -21,6 +21,7 @@
 #include "../../lib/crc16.h"
 #include "../../lib/pwm.h"
 #include "../../lib/time.h"
+#include "../../lib/analoginput.h"
 
 // application includes
 #include "commands.h"

@@ -18,6 +18,9 @@ InterruptCounterResult interrupt_counter_delta(uint16_t previous);
 
 int main( void ){
 
+	DDRC = 0xDB;
+	PORTC = 0x7E;;
+
 	uint8_t error;
 	Packet packet;
 	Queue* packets;
@@ -33,16 +36,19 @@ int main( void ){
 
 	// initialize motors
 	motors_init();
-	motors_set(MOTORS_LEFT , MOTORS_FWD, 2444);
-	motors_set(MOTORS_RIGHT, MOTORS_FWD, 2444);
+	motors_set(MOTORS_LEFT , MOTORS_FWD, 400);
+	motors_set(MOTORS_RIGHT, MOTORS_FWD, 400);
 
 	Motor* motor1 = motors_get_motor(MOTORS_LEFT);
 	Motor* motor2 = motors_get_motor(MOTORS_RIGHT);
 
+	// initialize analog input
+	analoginput_init();
+
 	// enable interrupts
 	sei();
 
-	float diff = 0, battery_voltage = 0, motor_driver_temp = 0;
+	float diff = 0, battery_voltage = 0, motor_driver_temp = 0, left_motor_amps = 0;
 
 
 	// loop forever
@@ -72,11 +78,21 @@ int main( void ){
 			
 			diff = diff * 0.00 + ((uint16_t) motor1->pwm - motor2->pwm) * 1.00;
 
-			cmd_send_debug16( 'd', (uint16_t) (abs(diff)) );
+			// send difference in pwm signals (check for inefficiencies in drivetrain 
+			//cmd_send_debug16( 'd', (uint16_t) (abs(diff)) );
 
 			// also get some analog inputs
-			motor_driver_temp = analoginput_get(MOTORDRIVER_TEMP)  * (5/1024.0f) * 1000;
-			battery_voltage = analoginput_get(BATTERY_VOLTAGE)
+			
+			// get motor driver temperature 
+			//motor_driver_temp = analoginput_get(BATTERY_VOLTAGE)  * (5/1024.0f) * 1000;
+			//cmd_send_debug16( 'T', motor_driver_temp);
+			
+			// get battery pack voltage 
+			battery_voltage = battery_voltage * 0.90 + (analoginput_get(BATTERY_VOLTAGE) * (5/1024.0f) * 1000 * 5.54) * 0.1;
+
+			//left_motor_amps = left_motor_amps  * 0.99f + ( (float) analoginput_get(RIGHT_MOTOR_AMPS) /120.8 * 1000.0f) * 0.01f;
+
+			cmd_send_debug16( 'W', (uint16_t) ( battery_voltage));
 
 
 
