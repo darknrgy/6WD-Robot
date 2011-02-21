@@ -73,6 +73,17 @@ void motors_tick(){
 	for (chan = 0; chan < MOTORS_CHANS; chan ++){
 		
 		motor = motors_get_motor(chan);
+        uint16_t rpm_buffer = motor->rpm_target;
+        if (motor->rpm_target > motor->rpm_measured){
+            if (motor->rpm_target - motor->rpm_measured > MOTOR_JERK_BUFFER){
+                rpm_buffer = motor->rpm_measured + MOTOR_JERK_BUFFER;
+            }        
+        }else if(motor->rpm_target < motor->rpm_measured){
+            if (motor->rpm_measured - motor->rpm_target > MOTOR_JERK_BUFFER){
+                rpm_buffer = motor->rpm_measured - MOTOR_JERK_BUFFER;
+            }        
+        }
+        
 
 		// get time delta
 		tr[chan] = time_get_time_delta(tr[chan].previous);
@@ -89,7 +100,7 @@ void motors_tick(){
         motor->rpm_delta = motor->rpm_delta * 0.65 + (rpm - motor->rpm_previous) * 0.35;		
 		
 		// determine the pwm acceleration rate
-        pwm_acc = ((float) motor->rpm_target - rpm) * 0.015 - motor->rpm_delta * 0.15;
+        pwm_acc = ((float) rpm_buffer - rpm) * 0.015 - motor->rpm_delta * 0.15;
 		
 		if (pwm_acc < - motor->pwm) motor->pwm = 0;
 		else if (pwm_acc + motor->pwm > 1023) motor->pwm = 1023;
@@ -98,7 +109,7 @@ void motors_tick(){
 		}
 
 		
-		if (motor->rpm_target == 0) motor->pwm = 0;
+		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(motor->pwm));
 		motor->rpm_previous = rpm;
 		motor->rpm_measured = rpm;

@@ -13,9 +13,9 @@
 #define MOTORS_FWD			0
 #define MOTORS_REV			1
 #define MOTORS_CHANS		2
-
 #define INTERRUPT_COUNTER_MAX 65535
 #define INTERRUPTS_PER_ROTATION 32
+#define MOTOR_JERK_BUFFER   700
 
 
 typedef struct Motor{
