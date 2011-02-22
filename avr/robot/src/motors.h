@@ -21,7 +21,7 @@
 typedef struct Motor{
 	
 	// target RPM
-	uint16_t rpm_target;
+	int16_t rpm_target;
 
 	// measured RPM
 	float rpm_measured;
@@ -48,7 +48,7 @@ typedef struct Motor{
 void motors_init();
 
 // set a motor speed and direction by channel
-void motors_set(uint8_t chan, uint8_t dir, uint16_t rpm);
+void motors_set(uint8_t chan, uint8_t dir, int16_t rpm);
 
 // get a motor by channel
 Motor* motors_get_motor(uint8_t chan);

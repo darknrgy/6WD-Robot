@@ -48,7 +48,7 @@ void motors_init(){
 }
 
 // set a motor speed and direction by channel
-void motors_set(uint8_t chan, uint8_t dir, uint16_t rpm){
+void motors_set(uint8_t chan, uint8_t dir, int16_t rpm){
 	Motor* motor = motors_get_motor(chan);
 	motor->rpm_target = rpm;
 	motor->dir_target = dir;
@@ -73,7 +73,10 @@ void motors_tick(){
 	for (chan = 0; chan < MOTORS_CHANS; chan ++){
 		
 		motor = motors_get_motor(chan);
-        uint16_t rpm_buffer = motor->rpm_target;
+        int16_t rpm_dir = motor->rpm_target, rpm_buffer = motor->rpm_target;
+        
+        
+        
         if (motor->rpm_target > motor->rpm_measured){
             if (motor->rpm_target - motor->rpm_measured > MOTOR_JERK_BUFFER){
                 rpm_buffer = motor->rpm_measured + MOTOR_JERK_BUFFER;
@@ -95,6 +98,7 @@ void motors_tick(){
 		// 60000 is for converting to milliseconds to minutes (for RPM)
         time_ms = get_time_in_ms(tr[chan].delta);
 		rpm =  (float) icr[chan].delta / (float) INTERRUPTS_PER_ROTATION / (float) time_ms * (float) 60000;
+		if (motor->pwm < 0) rpm *= -1;
 		
 		// avg the rpm delta
         motor->rpm_delta = motor->rpm_delta * 0.65 + (rpm - motor->rpm_previous) * 0.35;		
@@ -102,15 +106,21 @@ void motors_tick(){
 		// determine the pwm acceleration rate
         pwm_acc = ((float) rpm_buffer - rpm) * 0.015 - motor->rpm_delta * 0.15;
 		
-		if (pwm_acc < - motor->pwm) motor->pwm = 0;
-		else if (pwm_acc + motor->pwm > 1023) motor->pwm = 1023;
+		/*if (pwm_acc < - motor->pwm) motor->pwm = 0;
+		else if (pwm_acc + motor->pwm > 512) motor->pwm = 512;
 		else{
 			 motor->pwm =  motor->pwm + pwm_acc;
-		}
+		}*/
+
+		motor->pwm =  motor->pwm + pwm_acc;
+		if (motor->pwm > 512) motor->pwm = 512;
+		if (motor->pwm < -512) motor->pwm = -512;
+		 
+
 
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
-		pwm_set(chan,floor(motor->pwm));
+		pwm_set(chan,floor(abs(motor->pwm)));
 		motor->rpm_previous = rpm;
 		motor->rpm_measured = rpm;
 	}    

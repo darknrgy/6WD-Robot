@@ -31,8 +31,11 @@ void cmd_pwm_setscalar(char* params){
 void cmd_rpmset(char* params){
 
 	
-	uint16_t left = params[0] << 8; left += params[1];
-	uint16_t right = params[2] << 8; right += params[3];
+	int16_t left = params[0] << 8; left += params[1];
+	int16_t right = params[2] << 8; right += params[3];
+
+	left  -= 10000;
+	right -= 10000;
 
 	motors_set(MOTORS_LEFT , MOTORS_FWD, left);
 	motors_set(MOTORS_RIGHT, MOTORS_FWD, right);
