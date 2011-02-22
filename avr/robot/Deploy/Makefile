@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = commands.o dualchannelcounter1pwm.o motors.o crc16.o packets.o pwm.o queue.o time.o usart.o analoginput.o 
+OBJECTS = commands.o dualchannelcounter1pwm.o motors.o analoginput.o crc16.o packets.o pwm.o queue.o time.o usart.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -53,6 +53,9 @@ dualchannelcounter1pwm.o: ../src/dualchannelcounter1pwm.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 motors.o: ../src/motors.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+analoginput.o: ../../lib/src/analoginput.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 crc16.o: ../../lib/src/crc16.c
@@ -71,9 +74,6 @@ time.o: ../../lib/src/time.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 usart.o: ../../lib/src/usart.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-analoginput.o: ../../lib/src/analoginput.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
