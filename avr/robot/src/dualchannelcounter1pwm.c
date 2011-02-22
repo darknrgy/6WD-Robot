@@ -38,8 +38,8 @@ int main( void ){
 
 	// initialize motors
 	motors_init();
-	motors_set(MOTORS_LEFT , MOTORS_FWD, 400);
-	motors_set(MOTORS_RIGHT, MOTORS_FWD, 400);
+	motors_set(MOTORS_LEFT, 400);
+	motors_set(MOTORS_RIGHT, 400);
 
 	Motor* motor1 = motors_get_motor(MOTORS_LEFT);
 	Motor* motor2 = motors_get_motor(MOTORS_RIGHT);

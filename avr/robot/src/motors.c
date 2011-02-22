@@ -16,6 +16,9 @@ uint16_t* motors_get_counter(uint8_t chan);
 // get a counter delta by channel
 InterruptCounterResult motors_get_interrupt_counter_result(uint8_t chan, uint16_t previous);
 
+// automatically set motor direction based on rpm polarity
+void motors_setdirection(char chan, uint8_t dir);
+
 /*******************************/
 /* PUBLIC FUNCTION DEFINITIONS */
 /*******************************/
@@ -41,17 +44,14 @@ void motors_init(){
         motor->rpm_measured = 0;
         motor->rpm_previous = 0;
         motor->rpm_delta = 0;
-        motor->pwm = 0;
-        motor->dir_target = 0;
-        motor->dir_measured = 0;        
+        motor->pwm = 0;      
     }
 }
 
 // set a motor speed and direction by channel
-void motors_set(uint8_t chan, uint8_t dir, int16_t rpm){
+void motors_set(uint8_t chan, int16_t rpm){
 	Motor* motor = motors_get_motor(chan);
 	motor->rpm_target = rpm;
-	motor->dir_target = dir;
 }
 
 
@@ -68,14 +68,14 @@ void motors_tick(){
 	static InterruptCounterResult icr[MOTORS_CHANS];
     static TimeResult tr[MOTORS_CHANS];
 	float time_ms, pwm_acc, rpm;
-	uint8_t chan;
+	uint8_t chan, dir;
+	int16_t rpm_buffer;
+	
 
 	for (chan = 0; chan < MOTORS_CHANS; chan ++){
 		
 		motor = motors_get_motor(chan);
-        int16_t rpm_dir = motor->rpm_target, rpm_buffer = motor->rpm_target;
-        
-        
+        rpm_buffer = motor->rpm_target;
         
         if (motor->rpm_target > motor->rpm_measured){
             if (motor->rpm_target - motor->rpm_measured > MOTOR_JERK_BUFFER){
@@ -118,13 +118,44 @@ void motors_tick(){
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(abs(motor->pwm)));
-		
-		if (motor->pwm > 0) PORTC = 0x7E;
-		else PORTC = 0xE7;
+
+		dir = 0;
+
+		if (motor->pwm > 0) dir = 1;
+
+		motors_setdirection(chan, dir);
 		
 		motor->rpm_previous = rpm;
 		motor->rpm_measured = rpm;
 	}    
+}
+
+
+void motors_setdirection(char chan, uint8_t dir){
+
+	switch (chan){
+		case MOTORS_RIGHT:
+			if (dir){
+				setbit(PORTC, BIT(4));
+				clearbit(PORTC, BIT(7));
+			}else{
+				setbit(PORTC, BIT(7));
+				clearbit(PORTC, BIT(4));
+			}
+			break;
+		case MOTORS_LEFT:
+			if (dir){
+				setbit(PORTC, BIT(3));
+				clearbit(PORTC, BIT(0));
+			}else{
+				setbit(PORTC, BIT(0));
+				clearbit(PORTC, BIT(3));
+			}
+			break;
+		default:
+			break;
+	}
+
 }
 
 /*******************************/

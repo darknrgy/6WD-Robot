@@ -144,7 +144,7 @@ def rpm_handler(data):
     return "RPM: " + str( struct.unpack(">H", data[:2])[0]) + str( struct.unpack(">H", data[2:])[0])
 
 def rpmset_handler(args):
-    return struct.pack('>H', int(args[0].strip())) + struct.pack('>H', int(args[1].strip()))
+    return struct.pack('>H', int(args[0].strip()) + 10000) + struct.pack('>H', int(args[1].strip()) + 10000)
     
 def debug_handler(data):
     print "DEBUG " + str(data[2]),

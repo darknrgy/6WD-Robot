@@ -10,8 +10,6 @@
 
 #define MOTORS_LEFT			0
 #define MOTORS_RIGHT		1
-#define MOTORS_FWD			0
-#define MOTORS_REV			1
 #define MOTORS_CHANS		2
 #define INTERRUPT_COUNTER_MAX 65535
 #define INTERRUPTS_PER_ROTATION 32
@@ -35,12 +33,6 @@ typedef struct Motor{
     // current PWM value
     float pwm;
 
-	// direction 
-	uint8_t dir_target;
-
-	// measured direction
-	uint8_t dir_measured;
-
 } Motor;
 
 
@@ -48,7 +40,7 @@ typedef struct Motor{
 void motors_init();
 
 // set a motor speed and direction by channel
-void motors_set(uint8_t chan, uint8_t dir, int16_t rpm);
+void motors_set(uint8_t chan, int16_t rpm);
 
 // get a motor by channel
 Motor* motors_get_motor(uint8_t chan);
