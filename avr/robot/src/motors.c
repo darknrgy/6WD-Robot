@@ -115,12 +115,13 @@ void motors_tick(){
 		motor->pwm =  motor->pwm + pwm_acc;
 		if (motor->pwm > 512) motor->pwm = 512;
 		if (motor->pwm < -512) motor->pwm = -512;
-		 
-
-
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(abs(motor->pwm)));
+		
+		if (motor->pwm > 0) PORTC = 0x7E;
+		else PORTC = 0xE7;
+		
 		motor->rpm_previous = rpm;
 		motor->rpm_measured = rpm;
 	}    

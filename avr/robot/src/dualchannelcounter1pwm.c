@@ -19,7 +19,9 @@ InterruptCounterResult interrupt_counter_delta(uint16_t previous);
 int main( void ){
 
 	DDRC = 0xDB;
-	PORTC = 0x7E;;
+	//PORTC = 0x7E;;
+	PORTC = 0xE7;
+
 
 	uint8_t error;
 	Packet packet;
