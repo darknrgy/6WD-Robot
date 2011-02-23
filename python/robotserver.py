@@ -20,7 +20,8 @@ cmds = {
 'rpmset':           "\x21", 
 'get_rpm':          "\x21", 
 'invalid_cmd':      "\x03", 
-'debug':            "\x30"}
+'debug':            "\x30",
+'echo':             "\x31"}
 
 
 cmds_invert = dict()
