@@ -1,6 +1,12 @@
 darknrgy's 6WD Robot Project
 
-This is a six wheel drive robot project. The robot is intended to be controlled over the internet through a client written in wxpython and viewed through a webcam. The files tracked in git-hub are primarly source code for the AVR microcontroller used on the robot and various supporting applications. 
+This is a six wheel drive robot project. The robot is intended to be controlled over the internet viewed through a webcam.
+
+There are three main components to the source code:
+
+- Robot: Microcontroller code, written in AVR-GCC for the ATMega family of Atmel microcontrollers. Projects are developed through AVR Studio for Windows. 
+- Robot Server: A python application that runs on the robot's main computer, a Fit-PC2. This application serves as a proxy for all internet communication as well as some robot babysitting. 
+- Client: A wxPython application which provides the robot operator with an interface for interacting with the robot.  
 
 ** BLOG **
 http://darknrgy.typepad.com/darknrgys-blog/6wd-robot/

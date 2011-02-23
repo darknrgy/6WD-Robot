@@ -2,7 +2,7 @@ import wx
 
 OUTPUTFIELD_SIZE = 75
 
-class ExamplePanel(wx.Panel):
+class RobotClient(wx.Panel):
     def __init__(self, parent, id):
         
         wx.Panel.__init__(self, parent, id, wx.DefaultPosition,wx.DefaultSize, wx.WANTS_CHARS)
@@ -166,6 +166,6 @@ class ThrottleControl:
         
 app = wx.App(False)
 frame = wx.Frame(None, size=(720,400))
-panel = ExamplePanel(frame, 1)
+panel = RobotClient(frame, 1)
 frame.Show()
 app.MainLoop()        
