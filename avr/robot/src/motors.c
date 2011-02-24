@@ -27,7 +27,7 @@ void motors_setdirection(char chan, uint8_t dir);
 void motors_init(){
 	
 	// configure external interrupts on INT0 and INT1
-	setbit(MCUCR,	BIT(ISC00) 	| 	BIT(ISC10));
+	setbit(MCUCR,	BIT(ISC01) 	| 	BIT(ISC11));
 	setbit(GICR, 	BIT(INT0) 	| 	BIT(INT1));
 
 	// initialize hardware PWM
@@ -45,6 +45,8 @@ void motors_init(){
         motor->rpm_previous = 0;
         motor->rpm_delta = 0;
         motor->pwm = 0;      
+		motor->dir = 1;
+		motor->counter = 0;
     }
 }
 
@@ -97,8 +99,9 @@ void motors_tick(){
 
 		// 60000 is for converting to milliseconds to minutes (for RPM)
         time_ms = get_time_in_ms(tr[chan].delta);
+		
 		rpm =  (float) icr[chan].delta / (float) INTERRUPTS_PER_ROTATION / (float) time_ms * (float) 60000;
-		if (motor->pwm < 0) rpm *= -1;
+		rpm *= motor->dir;
 		
 		// avg the rpm delta
         motor->rpm_delta = motor->rpm_delta * 0.65 + (rpm - motor->rpm_previous) * 0.35;		
@@ -106,15 +109,11 @@ void motors_tick(){
 		// determine the pwm acceleration rate
         pwm_acc = ((float) rpm_buffer - rpm) * 0.015 - motor->rpm_delta * 0.15;
 		
-		/*if (pwm_acc < - motor->pwm) motor->pwm = 0;
-		else if (pwm_acc + motor->pwm > 512) motor->pwm = 512;
-		else{
-			 motor->pwm =  motor->pwm + pwm_acc;
-		}*/
-
+		if (chan == MOTORS_RIGHT) cmd_send_debug16('M', (uint16_t) motor->dir + 1);
+		
 		motor->pwm =  motor->pwm + pwm_acc;
-		if (motor->pwm > 512) motor->pwm = 512;
-		if (motor->pwm < -512) motor->pwm = -512;
+		if (motor->pwm > 256) motor->pwm = 256;
+		if (motor->pwm < -256) motor->pwm = -256;
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(abs(motor->pwm)));
@@ -163,31 +162,51 @@ void motors_setdirection(char chan, uint8_t dir){
 /*******************************/
 
 // LEFT motor interrupt
-ISR(INT0_vect, ISR_NOBLOCK){	
-	uint16_t* counter = motors_get_counter(MOTORS_LEFT);
-    *counter = *counter + 1;
+ISR(INT0_vect, ISR_NOBLOCK){
+
+	Motor* motor;	
+	motor = motors_get_motor(MOTORS_LEFT);
+	
+	if (getbit(PINA, BIT(4))){
+		motor->dir = 1;
+	}else{
+		motor->dir = -1;
+	}
+	motor->counter++;
 }
 
 // RIGHT motor interrupt
 ISR(INT1_vect, ISR_NOBLOCK){	
-	uint16_t* counter = motors_get_counter(MOTORS_RIGHT);
-    *counter = *counter + 1;
-}
-
-// get an interrupt counter by channel
-uint16_t* motors_get_counter(uint8_t chan){
-	static uint16_t counters[2];
-	return &counters[chan];
-
+	Motor* motor;	
+	motor = motors_get_motor(MOTORS_RIGHT);
+	
+	if (getbit(PINA, BIT(5))){
+		motor->dir = -1;
+	}else{
+		motor->dir = 1;
+	}
+	motor->counter++;
 }
 
 // calculate a counter delta, internal only 
 InterruptCounterResult motors_get_interrupt_counter_result(uint8_t chan, uint16_t previous){
 
-    InterruptCounterResult result;
+    
+	InterruptCounterResult result;
+	Motor* motor;	
+	motor = motors_get_motor(chan);
+	if (motor->counter >= previous) result.delta = motor->counter - previous;
+	else result.delta = (uint16_t) INTERRUPT_COUNTER_MAX - previous + motor->counter;
+	result.previous = motor->counter;
+	return result;
+
+	/*
+
     uint16_t* current = motors_get_counter(chan);
     if (*current >= previous) result.delta = *current - previous;
     else result.delta = (uint16_t) INTERRUPT_COUNTER_MAX - previous + *current;
     result.previous = *current;
     return result;
+	*/
+
 }

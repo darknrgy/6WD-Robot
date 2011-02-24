@@ -12,8 +12,8 @@
 #define MOTORS_RIGHT		1
 #define MOTORS_CHANS		2
 #define INTERRUPT_COUNTER_MAX 65535
-#define INTERRUPTS_PER_ROTATION 32
-#define MOTOR_JERK_BUFFER   700
+#define INTERRUPTS_PER_ROTATION 16
+#define MOTOR_JERK_BUFFER   500
 
 
 typedef struct Motor{
@@ -32,6 +32,12 @@ typedef struct Motor{
     
     // current PWM value
     float pwm;
+
+	// motor direction
+	int8_t dir;
+
+	// motor interrupt counter
+	uint16_t counter;
 
 } Motor;
 
