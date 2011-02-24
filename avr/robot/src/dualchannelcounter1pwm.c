@@ -14,7 +14,7 @@ uint16_t* interrupt_counter_1();
 InterruptCounterResult interrupt_counter_delta(uint16_t previous);
 
 
-
+void send_status();
 
 int main( void ){
 
@@ -41,17 +41,11 @@ int main( void ){
 	motors_set(MOTORS_LEFT, 400);
 	motors_set(MOTORS_RIGHT, 400);
 
-	Motor* motor1 = motors_get_motor(MOTORS_LEFT);
-	Motor* motor2 = motors_get_motor(MOTORS_RIGHT);
-
 	// initialize analog input
 	analoginput_init();
 
 	// enable interrupts
 	sei();
-
-	float diff = 0, battery_voltage = 0, motor_driver_temp = 0, left_motor_amps = 0;
-
 
 	// loop forever
 	while(1){
@@ -77,32 +71,36 @@ int main( void ){
 		if (get_time_in_ms(tr.delta) > 20){
 			previous = tr.previous;
 			motors_tick();
-			
-			diff = diff * 0.00 + ((uint16_t) motor1->pwm - motor2->pwm) * 1.00;
-
-			// send difference in pwm signals (check for inefficiencies in drivetrain 
-			//cmd_send_debug16( 'd', (uint16_t) (abs(diff)) );
-
-			// also get some analog inputs
-			
-			// get motor driver temperature 
-			//motor_driver_temp = analoginput_get(BATTERY_VOLTAGE)  * (5/1024.0f) * 1000;
-			//cmd_send_debug16( 'T', motor_driver_temp);
-			
-			// get battery pack voltage 
-			battery_voltage = battery_voltage * 0.90 + (analoginput_get(BATTERY_VOLTAGE) * (5/1024.0f) * 1000 * 5.54) * 0.1;
-
-			//left_motor_amps = left_motor_amps  * 0.99f + ( (float) analoginput_get(RIGHT_MOTOR_AMPS) /120.8 * 1000.0f) * 0.01f;
-
-			cmd_send_debug16( 'W', (uint16_t) ( battery_voltage));
-
-
-
-			
+			send_status();
 
 		}	
 	}
 	
+}
+
+void send_status(){
+
+		static float battery_voltage, left_motor_amps, right_motor_amps;
+		static uint8_t scalar = 0;
+		scalar ++;
+		if (scalar < 2) return;
+		scalar = 0;
+
+		Motor* motorL;
+		Motor* motorR;
+		motorL = motors_get_motor(MOTORS_LEFT);
+		motorR = motors_get_motor(MOTORS_RIGHT);
+
+
+		battery_voltage = battery_voltage * 0.90 + (analoginput_get(BATTERY_VOLTAGE) * (5/1024.0f) * 1000 * 5.54) * 0.1;
+
+		left_motor_amps = left_motor_amps  * 0.98f + ( (float) analoginput_get(LEFT_MOTOR_AMPS) /120.8 ) * 0.02f;
+		right_motor_amps = right_motor_amps  * 0.98f + ( (float) analoginput_get(RIGHT_MOTOR_AMPS) /120.8 ) * 0.02f;
+
+		cmd_sendstatus('L', (uint16_t) abs(motorL->rpm_measured),  (uint16_t) (left_motor_amps * battery_voltage),  (uint16_t) abs(motorL->pwm));
+		cmd_sendstatus('R', (uint16_t) abs(motorR->rpm_measured),  (uint16_t) (right_motor_amps * battery_voltage),  (uint16_t) abs(motorR->pwm));
+		cmd_sendstatus('M', (uint16_t) battery_voltage, 0,0);
+		
 }
 
 

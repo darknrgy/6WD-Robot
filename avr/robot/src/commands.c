@@ -31,8 +31,8 @@ void cmd_pwm_setscalar(char* params){
 void cmd_rpmset(char* params){
 
 	
-	int16_t right = params[0] << 8; right += params[1];
-	int16_t left = params[2] << 8; left += params[3];
+	int16_t left = params[0] << 8; left += params[1];
+	int16_t right = params[2] << 8; right += params[3];
 
 	left  -= 10000;
 	right -= 10000;
@@ -65,6 +65,21 @@ void cmd_send_debug16(char name, uint16_t debug){
 	packet.data[2] = debug >> 8;
 	packet.data[3] = debug - (packet.data[1] << 8);
 	packet.length = 4;
+	Packets_send(packet);
+
+}
+
+void cmd_sendstatus(char id, uint16_t v1, uint16_t v2, uint16_t v3){
+	Packet packet;
+	packet.data[0] = CMD_SENDSTATUS;
+	packet.data[1] = id;
+	packet.data[2] = v1 >> 8;
+	packet.data[3] = v1 - (packet.data[2] << 8);
+	packet.data[4] = v2 >> 8;
+	packet.data[5] = v2 - (packet.data[4] << 8);
+	packet.data[6] = v3 >> 8;
+	packet.data[7] = v3 - (packet.data[6] << 8);	
+	packet.length = 8;
 	Packets_send(packet);
 
 }

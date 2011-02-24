@@ -4,6 +4,7 @@ import asynchat
 import struct
 import sys
 import re
+import pickle
 
 import socketlib
 import crc16
@@ -21,8 +22,10 @@ cmds = {
 'get_rpm':          "\x21", 
 'invalid_cmd':      "\x03", 
 'debug':            "\x30",
-'echo':             "\x31"}
+'echo':             "\x31",
+'status':           "\x32"}
 
+robot_status = {}
 
 cmds_invert = dict()
 for k,v in cmds.iteritems():
@@ -59,6 +62,7 @@ class RobotConnection(socketlib.Socket):
             debug_handler(data)
             return        
         translated = translate_from_robot(data)        
+        if translated == False: return
         checksum = struct.unpack(">H", req[-2:])[0]
         if crc16.crc16(data) != checksum:
             translated = "CHECKSUM MISMATCH: " + repr(req)
@@ -83,6 +87,7 @@ class UserConnection(socketlib.Socket):
         if req == '':
             return
         self.refresh_robot_sock()
+        if (req == 'get_status'): return self.write("robot_status" + pickle.dumps(robot_status))                   
         self.robot_sock[0].write(req)       
         
         
@@ -93,12 +98,22 @@ class UserConnection(socketlib.Socket):
         err = "Exception in UserConnection: " + str(sys.exc_info()[:2])
         self.write(err)
         print err
+    
+    def handle_close(self):
+        if len(self.robot_sock) >  0 and self.robot_sock[0].is_open() == True:
+            self.robot_sock[0].close()
+        socketlib.Socket.handle_close(self)
+        
 
 def translate_from_robot(packet):
     res = str(ord(packet[0])) + ','
     cmd = str(cmds_invert.get(packet[1]))
     if handlers.get(cmd, False) != False:
-        res += handlers.get(cmd)(packet[2:])
+        is_res = handlers.get(cmd)(packet[2:])
+        if is_res == False:
+            return False
+        else: 
+            res += is_res
     else:
         res += str(cmds_invert.get(packet[1]))
         for element in packet[2:]:
@@ -156,11 +171,22 @@ def debug_handler(data):
         print str(struct.unpack(">L", data[3:])[0])
     else:
         print "Unknown Data Type"
+
+def status_handler(data):
     
+    params = []
+    params.append(str(struct.unpack(">H", data[1:3])[0]))
+    params.append(str(struct.unpack(">H", data[3:5])[0]))
+    params.append(str(struct.unpack(">H", data[5:7])[0]))
+    robot_status[data[0:1]] = params
+    return False
+
+        
     
 handlers = {
 'rpm': rpm_handler,
-'rpmset': rpmset_handler}
+'rpmset': rpmset_handler,
+'status': status_handler}
 
 
     

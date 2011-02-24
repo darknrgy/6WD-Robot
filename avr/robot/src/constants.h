@@ -10,12 +10,13 @@
 #define CMD_RPM				0x20
 #define CMD_RPMSET			0x21
 #define CMD_DEBUG16			0x30
+#define CMD_SENDSTATUS		0x32
 
 // ADC Channels
 #define MOTORDRIVER_TEMP	0x02
 #define BATTERY_VOLTAGE		0X01
-#define LEFT_MOTOR_AMPS		0x06
-#define RIGHT_MOTOR_AMPS	0x07
+#define LEFT_MOTOR_AMPS		0x07
+#define RIGHT_MOTOR_AMPS	0x06
 
 
 

@@ -2,6 +2,7 @@ import wx
 import socketlib
 import socket
 import asyncore
+import pickle
 
 APP_ABOUT = """Robot Client Beta
 Dan Quinlivan
@@ -24,6 +25,7 @@ class RobotClient(wx.Panel):
         self.proxy_connection = False
         self.keypress = {}
         self.throttleControl = ThrottleControl()
+        self.counter = 0
         
         # window sizers
         mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -31,7 +33,7 @@ class RobotClient(wx.Panel):
         hSizer = wx.BoxSizer(wx.HORIZONTAL)
                 
         # create motor fields
-        motor_fields = ['V-target', 'V-actual', 'POWER', 'RPM', 'PWM', 'FAULT']
+        motor_fields = ['RPM(Targ)', 'RPM(Meas)', 'POWER', 'PWM', 'FAULT']
         self.fields = {}
         row = 0
         txtfieldsize = 75
@@ -84,6 +86,17 @@ class RobotClient(wx.Panel):
         
         self.SetSizerAndFit(mainSizer)
         
+    def UpdateFields(self, fields):
+        print repr(fields)
+        print "ok printing this..." + str(fields.get('L')[0])
+        if len(fields) < 1: return
+        self.fields['RPM(Meas)']['left'].SetValue(format_RPM(fields['L'][0]))
+        self.fields['POWER']['left'].SetValue(format_Watts(fields['L'][1]))
+        self.fields['PWM']['left'].SetValue(format_PWM(fields['L'][2]))
+        self.fields['RPM(Meas)']['right'].SetValue(format_RPM(fields['R'][0]))
+        self.fields['POWER']['right'].SetValue(format_Watts(fields['R'][1]))
+        self.fields['PWM']['right'].SetValue(format_PWM(fields['R'][2]))
+        
     def keepKeyboardInputFocus(self, event):
         self.keyboardinputbutton.SetFocus();
     
@@ -95,7 +108,7 @@ class RobotClient(wx.Panel):
         key = event.GetKeyCode()
         self.keypress[key] = 0
     
-    def OnPoll(self, event):        
+    def OnPoll(self, event):       
 
         # handle keyboard input
         keys = self.throttleControl.key_mapping.keys()
@@ -119,7 +132,28 @@ class RobotClient(wx.Panel):
                     str(int(self.throttleControl.throttle['left']) * 100) + "," + 
                     str(int(self.throttleControl.throttle['right']) * 100))
                 
-        
+                self.counter += 1
+                if self.counter < 5: return 
+                self.proxy_connection.write('get_status')
+                self.counter = 0
+ 
+def format_Watts(val):
+    watts = float()
+    watts = float(val) / 1000
+    watts = '{0:0>4.1f} W'.format(watts)
+    return watts
+    
+def format_RPM(val):
+    return '{0:0>5d} '.format(int(val))
+    
+def format_PWM(val):
+    pwm = float(val) * (100.0/1024.0)
+    pwm = str(int(pwm)) + "%"
+    return pwm
+    
+
+    
+ 
 class ThrottleControl:
     
     def __init__(self):
@@ -248,6 +282,9 @@ class ProxyConnection(socketlib.Socket):
         socketlib.Socket.write(self, data)        
                 
     def handle_request(self, req):
+        if req.find('robot_status') != -1: 
+            fields = req[12:]
+            return robot_panel.UpdateFields(pickle.loads(fields))
         robot_panel.logger.AppendText(req + "\n")
         
     def handle_close(self):
@@ -256,7 +293,11 @@ class ProxyConnection(socketlib.Socket):
         
     def handle_connect(self):
         robot_panel.logger.AppendText("Connection established!\n")
-            
+    
+
+
+
+        
 app = wx.App(False)
 frame = MainWindow(None, "6WD Robot Client")
 robot_panel = RobotClient(frame, 1)

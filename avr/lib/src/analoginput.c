@@ -16,13 +16,13 @@ void analoginput_init(){
 	setbit(ADMUX, BIT(REFS0));	
 	
 	// ADC Enable
-	setbit(ADCSRA, BIT(ADEN) | BIT (ADIE) | BIT(ADPS2) | BIT(ADPS1));// | BIT (ADPS0));
+	setbit(ADCSRA, BIT(ADEN) | BIT (ADIE) | BIT(ADPS2) | BIT(ADPS1) | BIT (ADPS0));
 }
 
 uint16_t analoginput_get(uint8_t chan){
     ADMUX = (ADMUX & 0xE0) | chan;
     setbit(ADCSRA, BIT(ADSC));
-    for (uint8_t i = 0; i < 255; i ++){
+    for (uint16_t i = 0; i < 10000; i ++){
 		if (ADC_RESULT) break;
 	}
     ADC_RESULT = 0x00;
