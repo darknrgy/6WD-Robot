@@ -70,7 +70,7 @@ class RobotClient(wx.Panel):
         # wxTimer events
         self.poller = wx.Timer(self, wx.NewId())
         self.Bind(wx.EVT_TIMER, self.OnPoll)
-        self.poller.Start(20, wx.TIMER_CONTINUOUS)
+        self.poller.Start(50, wx.TIMER_CONTINUOUS)
     
         
         # arrange widgets
@@ -113,35 +113,54 @@ class RobotClient(wx.Panel):
             if self.proxy_connection.is_open() == False:
                 self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))
             if self.proxy_connection.is_open() == True:
-                pass
-                #self.proxy_connection.write("echo,1,2")
+                # send and receive socket data
+                self.proxy_connection.write(
+                    "rpmset," + 
+                    str(int(self.throttleControl.throttle['left']) * 100) + "," + 
+                    str(int(self.throttleControl.throttle['right']) * 100))
                 
         
 class ThrottleControl:
     
     def __init__(self):
-        self.key_mapping = {'W': self.accelerate, 'S': self.decelerate, 'A': self.turnleft, 'D': self.turnright}
+        self.key_mapping = {'A': self.turnleft, 
+                            'S': self.center,
+                            'D': self.turnright,
+                            'I': self.accelerate, 
+                            'K': self.sit,
+                            ',': self.decelerate,
+                            ' ': self.fullstop
+                            }
         self.throttle = {'left': 0.0, 'right': 0.0}
-        
+    def turnleft(self):
+        self.throttle['left'] -= 1
+        self.throttle['right'] += 1
+        self.validate()    
+    def center(self):
+        center = (self.throttle['left'] + self.throttle['right']) / 2
+        self.throttle['left'] = center
+        self.throttle['right'] = center     
+        self.validate()    
+    def turnright(self):
+        self.throttle['left'] += 1
+        self.throttle['right'] -= 1
+        self.validate()   
     def accelerate(self):
         self.throttle['left'] += 1
         self.throttle['right'] += 1
         self.validate()
-    
+    def sit(self):
+        center = (self.throttle['left'] + self.throttle['right']) / 2
+        self.throttle['left'] -= center
+        self.throttle['right'] -= center               
     def decelerate(self):
         self.throttle['left'] -= 1
         self.throttle['right'] -= 1
         self.validate()
-    
-    def turnleft(self):
-        self.throttle['left'] -= 1
-        self.throttle['right'] += 1
-        self.validate()
+    def fullstop(self):
+        self.throttle['left'] = 0
+        self.throttle['right'] = 0
         
-    def turnright(self):
-        self.throttle['left'] += 1
-        self.throttle['right'] -= 1
-        self.validate()
         
     def validate(self):
         if self.throttle['left'] > 100: self.throttle['left'] = 100
