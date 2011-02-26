@@ -57,6 +57,7 @@ class RobotConnection(socketlib.Socket):
     def handle_request(self, req):
         
         #print "req", repr(req)
+        if len(req) < 3: return
         data = req[0:-2]
         if req[1] == cmds.get('debug') :
             debug_handler(data)
@@ -66,6 +67,7 @@ class RobotConnection(socketlib.Socket):
         checksum = struct.unpack(">H", req[-2:])[0]
         if crc16.crc16(data) != checksum:
             translated = "CHECKSUM MISMATCH: " + repr(req)
+            return
 
         if self.user_sock.is_open():
             self.user_sock.write(translated)
