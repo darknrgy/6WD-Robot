@@ -63,16 +63,17 @@ class RobotConnection(socketlib.Socket):
         
         if len(req) < 3: return
         self.last_update = time.time()
-	data = req[0:-2]
+        data = req[0:-2]
+        checksum = struct.unpack(">H", req[-2:])[0]
+        if crc16.crc16(data) != checksum:
+            translated = "CHECKSUM MISMATCH: " + repr(req)
+            return
         if req[1] == cmds.get('debug') :
             debug_handler(data)
             return        
         translated = translate_from_robot(data)        
         if translated == False: return
-        checksum = struct.unpack(">H", req[-2:])[0]
-        if crc16.crc16(data) != checksum:
-            translated = "CHECKSUM MISMATCH: " + repr(req)
-            return
+        
 	
         if self.user_sock.is_open():
             self.user_sock.write(translated)
