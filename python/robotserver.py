@@ -1,3 +1,6 @@
+#!/usr/bin/python
+
+
 import asyncore
 import socket
 import asynchat
