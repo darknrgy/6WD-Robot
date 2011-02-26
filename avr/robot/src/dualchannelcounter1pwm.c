@@ -32,6 +32,7 @@ int main( void ){
 	time_init();
 	TimeResult tr;
 	uint32_t previous = 0;
+	uint32_t watchdog = 0;
 
 	// initialize usart
 	usart_init();
@@ -64,6 +65,8 @@ int main( void ){
 			}
 
 			handle_packet(packet);
+			watchdog = time_get_time();
+			
 		}
 		tr = time_get_time_delta(previous);
 		
@@ -73,6 +76,12 @@ int main( void ){
 			motors_tick();
 			send_status();
 
+		}	
+
+		tr = time_get_time_delta(watchdog);
+		if (get_time_in_ms(tr.delta) > 500){
+			motors_set(MOTORS_LEFT, 0);
+			motors_set(MOTORS_RIGHT, 0);
 		}	
 	}
 	
