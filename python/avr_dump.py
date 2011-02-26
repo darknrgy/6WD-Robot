@@ -6,7 +6,7 @@ import sys
 
 import socketlib
 
-ROBOT_PORT = 5335
+ROBOT_PORT = 5331
 
 class RobotConnection(socketlib.Socket):
     def __init__(self):
@@ -22,7 +22,7 @@ class RobotConnection(socketlib.Socket):
         
                 
     def handle_request(self, req):
-        print "rcv", repr(req)
+        print "rcv", len(req), repr(req)
 
 
 robot_server = RobotConnection()
