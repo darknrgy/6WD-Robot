@@ -19,7 +19,7 @@ d - turn right
 
 robotserver = {'host': mysettings.ROBOT_HOST, 'port': 8080}
 
-class RobotClient(wx.Panel):
+class RobotPanel(wx.Panel):
     def __init__(self, parent, id):
         
         wx.Panel.__init__(self, parent, id, wx.DefaultPosition,wx.DefaultSize, wx.WANTS_CHARS)
@@ -35,6 +35,7 @@ class RobotClient(wx.Panel):
         robot_reporting_grid = wx.GridBagSizer(hgap=5, vgap=5)
         robot_grid = wx.BoxSizer(wx.VERTICAL)
         button_grid = wx.BoxSizer(wx.VERTICAL)
+        cli_grid = wx.BoxSizer(wx.VERTICAL)
         main_grid = wx.BoxSizer(wx.HORIZONTAL)
                 
         # create motor fields
@@ -93,6 +94,13 @@ class RobotClient(wx.Panel):
         # Logging panel
         self.logger = wx.TextCtrl(self, size=(300,300), style=wx.TE_MULTILINE | wx.TE_READONLY)
         wx.EVT_SET_FOCUS(self.logger, self.keepKeyboardInputFocus)
+        
+        # CLI interface
+        self.cli = wx.StaticText(self, label="Command Line Interface")
+        self.cli_field = wx.TextCtrl(self, size=(300,-1), style = wx.TE_PROCESS_ENTER)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnCLISubmit, self.cli_field)
+        
+        #wx.EVT_TEXT_ENTER(self.cli_field, self.OnCLISubmit)
 
         # wxTimer events
         self.poller = wx.Timer(self, wx.NewId())
@@ -108,10 +116,14 @@ class RobotClient(wx.Panel):
         robot_grid.Add(robot_reporting_grid, flag=wx.ALIGN_CENTER)
         button_grid.Add(self.keyboardinputbutton)
         button_grid.Add(self.cpushutdownbutton)
+        cli_grid.Add(self.logger)
+        cli_grid.AddSpacer(3)
+        cli_grid.Add(self.cli)
+        cli_grid.Add(self.cli_field)
         main_grid.Add(robot_grid)
         main_grid.Add(button_grid)
         main_grid.AddSpacer(10)
-        main_grid.Add(self.logger)
+        main_grid.Add(cli_grid)
         mainSizer.Add(main_grid, 0, wx.ALL, 5)
         
         self.SetSizerAndFit(mainSizer)
@@ -126,6 +138,15 @@ class RobotClient(wx.Panel):
     def onKeyUp(self, event):
         key = event.GetKeyCode()
         self.keypress[key] = 0
+        
+    def OnCLISubmit(self, event):
+        self.keyboardinputbutton.SetFocus();
+        if self.proxy_connection == False:
+            self.logger.AppendText("Not connected to Robot Server, connect first")
+            return
+        print self.cli_field.GetValue()
+        self.proxy_connection.write(str(self.cli_field.GetValue()))
+        self.cli_field.Clear()
     
     def OnPoll(self, event):       
 
@@ -334,6 +355,6 @@ class ProxyConnection(socketlib.Socket):
         
 app = wx.App(False)
 frame = MainWindow(None, "6WD Robot Client")
-robot_panel = RobotClient(frame, 1)
+robot_panel = RobotPanel(frame, 1)
 frame.Show()
 app.MainLoop()        
