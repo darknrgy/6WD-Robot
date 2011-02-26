@@ -8,12 +8,13 @@
  */
 
 
-#define MOTORS_LEFT			0
-#define MOTORS_RIGHT		1
-#define MOTORS_CHANS		2
-#define INTERRUPT_COUNTER_MAX 65535
+#define MOTORS_LEFT				0
+#define MOTORS_RIGHT			1
+#define MOTORS_CHANS			2
+#define INTERRUPT_COUNTER_MAX 	65535
 #define INTERRUPTS_PER_ROTATION 16
-#define MOTOR_JERK_BUFFER   500
+#define MOTOR_JERK_BUFFER   	700
+#define MOTOR_PWM_MAX			1023
 
 
 typedef struct Motor{

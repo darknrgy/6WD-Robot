@@ -8,7 +8,7 @@ import pickle
 
 import socketlib
 import crc16
-ROBOTSERVER_HOST = "192.168.0.114"
+ROBOTSERVER_HOST = "192.168.0.110"
 ROBOTSERVER_PORT = 8080
 ROBOT_PORT = 5331
 

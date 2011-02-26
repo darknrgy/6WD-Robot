@@ -109,11 +109,9 @@ void motors_tick(){
 		// determine the pwm acceleration rate
         pwm_acc = ((float) rpm_buffer - rpm) * 0.015 - motor->rpm_delta * 0.15;
 		
-		if (chan == MOTORS_RIGHT) cmd_send_debug16('M', (uint16_t) motor->dir + 1);
-		
 		motor->pwm =  motor->pwm + pwm_acc;
-		if (motor->pwm > 256) motor->pwm = 256;
-		if (motor->pwm < -256) motor->pwm = -256;
+		if (motor->pwm > MOTOR_PWM_MAX) motor->pwm = MOTOR_PWM_MAX;
+		if (motor->pwm < -MOTOR_PWM_MAX) motor->pwm = -MOTOR_PWM_MAX;
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(abs(motor->pwm)));

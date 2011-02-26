@@ -72,7 +72,7 @@ class RobotClient(wx.Panel):
         # wxTimer events
         self.poller = wx.Timer(self, wx.NewId())
         self.Bind(wx.EVT_TIMER, self.OnPoll)
-        self.poller.Start(50, wx.TIMER_CONTINUOUS)
+        self.poller.Start(100, wx.TIMER_CONTINUOUS)
     
         
         # arrange widgets
@@ -87,8 +87,6 @@ class RobotClient(wx.Panel):
         self.SetSizerAndFit(mainSizer)
         
     def UpdateFields(self, fields):
-        print repr(fields)
-        print "ok printing this..." + str(fields.get('L')[0])
         if len(fields) < 1: return
         self.fields['RPM(Meas)']['left'].SetValue(format_RPM(fields['L'][0]))
         self.fields['POWER']['left'].SetValue(format_Watts(fields['L'][1]))
@@ -96,6 +94,8 @@ class RobotClient(wx.Panel):
         self.fields['RPM(Meas)']['right'].SetValue(format_RPM(fields['R'][0]))
         self.fields['POWER']['right'].SetValue(format_Watts(fields['R'][1]))
         self.fields['PWM']['right'].SetValue(format_PWM(fields['R'][2]))
+        self.fields['RPM(Targ)']['left'].SetValue(format_RPM(abs(int(self.leftThrottle.GetValue()) * 100)))
+        self.fields['RPM(Targ)']['right'].SetValue(format_RPM(abs(int(self.rightThrottle.GetValue()) * 100)))
         
     def keepKeyboardInputFocus(self, event):
         self.keyboardinputbutton.SetFocus();

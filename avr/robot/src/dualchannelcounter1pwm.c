@@ -38,8 +38,8 @@ int main( void ){
 
 	// initialize motors
 	motors_init();
-	motors_set(MOTORS_LEFT, 400);
-	motors_set(MOTORS_RIGHT, 400);
+	motors_set(MOTORS_LEFT, 0);
+	motors_set(MOTORS_RIGHT, 0);
 
 	// initialize analog input
 	analoginput_init();
@@ -82,9 +82,7 @@ void send_status(){
 
 		static float battery_voltage, left_motor_amps, right_motor_amps;
 		static uint8_t scalar = 0;
-		scalar ++;
-		if (scalar < 2) return;
-		scalar = 0;
+		
 
 		Motor* motorL;
 		Motor* motorR;
@@ -97,9 +95,12 @@ void send_status(){
 		left_motor_amps = left_motor_amps  * 0.98f + ( (float) analoginput_get(LEFT_MOTOR_AMPS) /120.8 ) * 0.02f;
 		right_motor_amps = right_motor_amps  * 0.98f + ( (float) analoginput_get(RIGHT_MOTOR_AMPS) /120.8 ) * 0.02f;
 
-		cmd_sendstatus('L', (uint16_t) abs(motorL->rpm_measured),  (uint16_t) (left_motor_amps * battery_voltage),  (uint16_t) abs(motorL->pwm));
-		cmd_sendstatus('R', (uint16_t) abs(motorR->rpm_measured),  (uint16_t) (right_motor_amps * battery_voltage),  (uint16_t) abs(motorR->pwm));
-		cmd_sendstatus('M', (uint16_t) battery_voltage, 0,0);
+		scalar ++;
+		if (scalar > 9) scalar = 0;
+		
+		if (scalar == 3) cmd_sendstatus('L', (uint16_t) abs(motorL->rpm_measured),  (uint16_t) (left_motor_amps * battery_voltage),  (uint16_t) abs(motorL->pwm));
+		if (scalar == 6) cmd_sendstatus('R', (uint16_t) abs(motorR->rpm_measured),  (uint16_t) (right_motor_amps * battery_voltage),  (uint16_t) abs(motorR->pwm));
+		if (scalar == 9) cmd_sendstatus('M', (uint16_t) battery_voltage, 0,0);
 		
 }
 
