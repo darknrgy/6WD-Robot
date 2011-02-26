@@ -3,6 +3,7 @@ import socketlib
 import socket
 import asyncore
 import pickle
+import mysettings
 
 APP_ABOUT = """Robot Client Beta
 Dan Quinlivan
@@ -16,7 +17,7 @@ d - turn right
 
 """
 
-robotserver = {'host': 'localhost', 'port': 8080}
+robotserver = {'host': mysettings.ROBOT_HOST, 'port': 8080}
 
 class RobotClient(wx.Panel):
     def __init__(self, parent, id):
@@ -29,8 +30,11 @@ class RobotClient(wx.Panel):
         
         # window sizers
         mainSizer = wx.BoxSizer(wx.VERTICAL)
-        grid = wx.GridBagSizer(hgap=5, vgap=5)
-        hSizer = wx.BoxSizer(wx.HORIZONTAL)
+        motor_reporting_grid = wx.GridBagSizer(hgap=5, vgap=5)
+        motor_grid = wx.BoxSizer(wx.HORIZONTAL)
+        robot_reporting_grid = wx.GridBagSizer(hgap=5, vgap=5)
+        robot_grid = wx.BoxSizer(wx.VERTICAL)
+        main_grid = wx.BoxSizer(wx.HORIZONTAL)
                 
         # create motor fields
         motor_fields = ['RPM(Targ)', 'RPM(Meas)', 'POWER', 'PWM', 'FAULT']
@@ -42,9 +46,9 @@ class RobotClient(wx.Panel):
             self.fields[field]['name'] = wx.StaticText(self, label=field)
             self.fields[field]['left'] = wx.TextCtrl(self, size=(txtfieldsize,-1), style=wx.TE_READONLY)
             self.fields[field]['right'] = wx.TextCtrl(self, size=(txtfieldsize,-1), style=wx.TE_READONLY)
-            grid.Add(self.fields[field]['name'], pos=(row,1), flag=wx.ALIGN_CENTER )
-            grid.Add(self.fields[field]['left'], pos=(row,0))
-            grid.Add(self.fields[field]['right'], pos=(row,2))
+            motor_reporting_grid.Add(self.fields[field]['name'], pos=(row,1), flag=wx.ALIGN_CENTER )
+            motor_reporting_grid.Add(self.fields[field]['left'], pos=(row,0))
+            motor_reporting_grid.Add(self.fields[field]['right'], pos=(row,2))
             wx.EVT_SET_FOCUS(self.fields[field]['left'], self.keepKeyboardInputFocus)
             wx.EVT_SET_FOCUS(self.fields[field]['right'], self.keepKeyboardInputFocus)
             row += 1
@@ -57,6 +61,22 @@ class RobotClient(wx.Panel):
         self.rightThrottle.SetTickFreq(10)
         wx.EVT_SET_FOCUS(self.leftThrottle, self.keepKeyboardInputFocus)
         wx.EVT_SET_FOCUS(self.rightThrottle, self.keepKeyboardInputFocus)
+        
+        # Robot Reporting Grid
+        
+        row = 0
+        robot_fields = ['BATT VOLTS', 'LOAD', 'BATT TEMP', 'CPU TMP', 'DRIVER TEMP']
+        for field in robot_fields:
+            self.fields[field] = {}
+            self.fields[field]['name'] = wx.StaticText(self, label=field)
+            self.fields[field]['value'] = wx.TextCtrl(self, size=(txtfieldsize,-1), style=wx.TE_READONLY)
+            robot_reporting_grid.Add(self.fields[field]['name'], pos=(row, 0), flag=wx.ALIGN_CENTER_VERTICAL )
+            robot_reporting_grid.Add(self.fields[field]['value'], pos=(row, 1))
+            #wx.EVT_SET_FOCUS(self.fields[field]['name'], self.keepKeyboardInputFocus)
+            wx.EVT_SET_FOCUS(self.fields[field]['value'], self.keepKeyboardInputFocus)
+            row += 1
+             
+        
         
         
         # Keyboard Input
@@ -76,26 +96,18 @@ class RobotClient(wx.Panel):
     
         
         # arrange widgets
-        hSizer.Add(self.leftThrottle)
-        hSizer.Add(grid, 0, wx.ALL, 5)
-        hSizer.Add(self.rightThrottle)
-        hSizer.Add(self.keyboardinputbutton)
-        hSizer.AddSpacer(10)
-        hSizer.Add(self.logger)
-        mainSizer.Add(hSizer, 0, wx.ALL, 5)
+        motor_grid.Add(self.leftThrottle)
+        motor_grid.Add(motor_reporting_grid, 0, wx.ALL, 5)
+        motor_grid.Add(self.rightThrottle)
+        robot_grid.Add(motor_grid)
+        robot_grid.Add(robot_reporting_grid, flag=wx.ALIGN_CENTER)
+        main_grid.Add(robot_grid)
+        main_grid.Add(self.keyboardinputbutton)
+        main_grid.AddSpacer(10)
+        main_grid.Add(self.logger)
+        mainSizer.Add(main_grid, 0, wx.ALL, 5)
         
         self.SetSizerAndFit(mainSizer)
-        
-    def UpdateFields(self, fields):
-        if len(fields) < 1: return
-        self.fields['RPM(Meas)']['left'].SetValue(format_RPM(fields['L'][0]))
-        self.fields['POWER']['left'].SetValue(format_Watts(fields['L'][1]))
-        self.fields['PWM']['left'].SetValue(format_PWM(fields['L'][2]))
-        self.fields['RPM(Meas)']['right'].SetValue(format_RPM(fields['R'][0]))
-        self.fields['POWER']['right'].SetValue(format_Watts(fields['R'][1]))
-        self.fields['PWM']['right'].SetValue(format_PWM(fields['R'][2]))
-        self.fields['RPM(Targ)']['left'].SetValue(format_RPM(abs(int(self.leftThrottle.GetValue()) * 100)))
-        self.fields['RPM(Targ)']['right'].SetValue(format_RPM(abs(int(self.rightThrottle.GetValue()) * 100)))
         
     def keepKeyboardInputFocus(self, event):
         self.keyboardinputbutton.SetFocus();
@@ -136,9 +148,21 @@ class RobotClient(wx.Panel):
                 if self.counter < 5: return 
                 self.proxy_connection.write('get_status')
                 self.counter = 0
+                
+    def UpdateFields(self, fields):
+        if len(fields) < 1: return
+        self.fields['RPM(Meas)']['left'].SetValue(format_RPM(fields['L'][0]))
+        self.fields['POWER']['left'].SetValue(format_Watts(fields['L'][1]))
+        self.fields['PWM']['left'].SetValue(format_PWM(fields['L'][2]))
+        self.fields['RPM(Meas)']['right'].SetValue(format_RPM(fields['R'][0]))
+        self.fields['POWER']['right'].SetValue(format_Watts(fields['R'][1]))
+        self.fields['PWM']['right'].SetValue(format_PWM(fields['R'][2]))
+        self.fields['RPM(Targ)']['left'].SetValue(format_RPM(abs(int(self.leftThrottle.GetValue()) * 100)))
+        self.fields['RPM(Targ)']['right'].SetValue(format_RPM(abs(int(self.rightThrottle.GetValue()) * 100)))
+        self.fields['BATT VOLTS']['value'].SetValue(format_voltage(fields['M'][0]))
+        self.fields['LOAD']['value'].SetValue(format_Watts(int(fields['R'][1]) + int(fields['L'][1]) + 12600))
  
 def format_Watts(val):
-    watts = float()
     watts = float(val) / 1000
     watts = '{0:0>4.1f} W'.format(watts)
     return watts
@@ -151,7 +175,10 @@ def format_PWM(val):
     pwm = str(int(pwm)) + "%"
     return pwm
     
-
+def format_voltage(val):
+    volts = float(val)
+    volts /= 1000
+    return '{0:0>3.2f} V'.format(volts)
     
  
 class ThrottleControl:
