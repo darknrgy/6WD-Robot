@@ -165,8 +165,7 @@ class RobotPanel(wx.Panel):
         asyncore.poll(timeout=0)
         if self.proxy_connection != False:
             if self.proxy_connection.is_open() == False:
-                self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))
-                time.sleep(5)
+                self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))                
             if self.proxy_connection.is_open() == True:
                 # send and receive socket data
                 self.proxy_connection.write(
