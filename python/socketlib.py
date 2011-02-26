@@ -20,7 +20,7 @@ class Socket(asynchat.async_chat):
         
     def collect_incoming_data(self, data):
         """Buffer the data"""
-        self.ibuffer += data   
+	self.ibuffer += data   
 
     def found_terminator(self):
         

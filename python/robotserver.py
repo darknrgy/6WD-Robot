@@ -173,7 +173,7 @@ def debug_handler(data):
         print "Unknown Data Type"
 
 def status_handler(data):
-    
+    if len(data) != 7: return False
     params = []
     params.append(str(struct.unpack(">H", data[1:3])[0]))
     params.append(str(struct.unpack(">H", data[3:5])[0]))
