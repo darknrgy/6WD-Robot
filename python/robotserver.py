@@ -197,10 +197,11 @@ handlers = {
 class RobotServer(socketlib.Server):
 
     def __init__(self, host, port):
-        while True:
+        connected = False
+	while connected == False:
             try:
                 socketlib.Server.__init__(self, host, port)
-                return
+		connected = True
             except:
                 print "Unable to bind to",host,port
                 time.sleep(1)
