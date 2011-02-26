@@ -5,10 +5,10 @@ import struct
 import sys
 import re
 import pickle
+import mysettings
 
 import socketlib
 import crc16
-ROBOTSERVER_HOST = "192.168.0.110"
 ROBOTSERVER_PORT = 8080
 ROBOT_PORT = 5331
 
@@ -190,7 +190,7 @@ handlers = {
 
 
     
-robot_server = socketlib.Server(ROBOTSERVER_HOST, ROBOTSERVER_PORT)
+robot_server = socketlib.Server(mysettings.ROBOTSERVER_HOST, ROBOTSERVER_PORT)
 robot_server.set_handler(UserConnection)
 robot_server.set_handler_args(robot_sock)
 

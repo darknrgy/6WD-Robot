@@ -5,3 +5,5 @@
 *.o.d
 *.eep
 *.hex
+*.pyc
+python/mysettings.py
