@@ -45,6 +45,7 @@ class RobotConnection(socketlib.Socket):
         self.set_terminator("\x00\xFF\xFF\xFF\xFF")
         self.user_sock = user_sock
         self.open = True
+        self.last_update = 0
         
     def write(self, data):
         data = translate_to_robot(data)
@@ -60,7 +61,7 @@ class RobotConnection(socketlib.Socket):
                 
     def handle_request(self, req):
         
-        #print "req", repr(req)
+        self.last_update = time.clock()
         if len(req) < 3: return
         data = req[0:-2]
         if req[1] == cmds.get('debug') :
@@ -98,9 +99,15 @@ class UserConnection(socketlib.Socket):
         self.set_terminator("\r\n")
         
     def handle_request(self, req):
+        
         if req == '':
             return
         self.refresh_robot_sock()
+        if time.clock() - self.robot_sock[0].last_update > 3:
+            self.write("Robot microcontroller unresponsive, disconnecting...")
+            self.close()
+            return    
+        
         if (req == 'get_status'): return self.write("robot_status" + pickle.dumps(robot_status))                   
         self.robot_sock[0].write(req)       
         

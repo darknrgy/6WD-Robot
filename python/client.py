@@ -28,6 +28,7 @@ class RobotPanel(wx.Panel):
         self.keypress = {}
         self.throttleControl = ThrottleControl()
         self.counter = 0
+        self.clock = 0
         
         # window sizers
         mainSizer = wx.BoxSizer(wx.VERTICAL)
@@ -165,7 +166,10 @@ class RobotPanel(wx.Panel):
         asyncore.poll(timeout=0)
         if self.proxy_connection != False:
             if self.proxy_connection.is_open() == False:
-                self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))                
+                if time.clock() - self.clock < 5: return
+                self.clock = time.clock()                
+                self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))  
+                                
             if self.proxy_connection.is_open() == True:
                 # send and receive socket data
                 self.proxy_connection.write(
