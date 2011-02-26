@@ -76,6 +76,14 @@ class RobotConnection(socketlib.Socket):
         if self.user_sock.is_open():
             self.user_sock.write(translated)
 
+            
+    def handle_close(self):
+        if self.user_sock.is_open():
+            self.user_sock.write("Robot microcontroller unresponsive, disconnecting...")
+            self.user_sock.close()
+        socketlib.Socket.handle_close(self)
+        
+        
     #def handle_error(self):
     #    err = "Exception in RobotConnection: " + str(sys.exc_info()[:2])
     #    self.user_sock.write(err)

@@ -4,6 +4,7 @@ import socket
 import asyncore
 import pickle
 import mysettings
+import time
 
 APP_ABOUT = """Robot Client Beta
 Dan Quinlivan
@@ -165,6 +166,7 @@ class RobotPanel(wx.Panel):
         if self.proxy_connection != False:
             if self.proxy_connection.is_open() == False:
                 self.proxy_connection = ProxyConnection(robotserver['host'], int(robotserver['port']))
+                time.sleep(5)
             if self.proxy_connection.is_open() == True:
                 # send and receive socket data
                 self.proxy_connection.write(
@@ -343,7 +345,7 @@ class ProxyConnection(socketlib.Socket):
         robot_panel.logger.AppendText(req + "\n")
         
     def handle_close(self):
-        robot_panel.logger.AppendText("Connection Timeout\n")
+        robot_panel.logger.AppendText("Not connected to Robot Server\n")
         socketlib.Socket.handle_close(self)
         
     def handle_connect(self):
