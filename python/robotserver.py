@@ -8,9 +8,9 @@ import pickle
 
 import socketlib
 import crc16
-
+ROBOTSERVER_HOST = "192.168.0.114"
 ROBOTSERVER_PORT = 8080
-ROBOT_PORT = 5335
+ROBOT_PORT = 5331
 
 robot_sock = []
 cmds = {
@@ -190,7 +190,7 @@ handlers = {
 
 
     
-robot_server = socketlib.Server('localhost', ROBOTSERVER_PORT)
+robot_server = socketlib.Server(ROBOTSERVER_HOST, ROBOTSERVER_PORT)
 robot_server.set_handler(UserConnection)
 robot_server.set_handler_args(robot_sock)
 
