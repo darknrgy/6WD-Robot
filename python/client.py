@@ -34,6 +34,7 @@ class RobotClient(wx.Panel):
         motor_grid = wx.BoxSizer(wx.HORIZONTAL)
         robot_reporting_grid = wx.GridBagSizer(hgap=5, vgap=5)
         robot_grid = wx.BoxSizer(wx.VERTICAL)
+        button_grid = wx.BoxSizer(wx.VERTICAL)
         main_grid = wx.BoxSizer(wx.HORIZONTAL)
                 
         # create motor fields
@@ -85,6 +86,10 @@ class RobotClient(wx.Panel):
         wx.EVT_KEY_UP(self.keyboardinputbutton, self.onKeyUp)    
         self.keyboardinputbutton.SetFocus();
         
+        # CPU Shutdown button
+        self.cpushutdownbutton = wx.Button(self, label="CPU Shutdown")
+        wx.EVT_SET_FOCUS(self.cpushutdownbutton, self.keepKeyboardInputFocus)
+        
         # Logging panel
         self.logger = wx.TextCtrl(self, size=(300,300), style=wx.TE_MULTILINE | wx.TE_READONLY)
         wx.EVT_SET_FOCUS(self.logger, self.keepKeyboardInputFocus)
@@ -101,8 +106,10 @@ class RobotClient(wx.Panel):
         motor_grid.Add(self.rightThrottle)
         robot_grid.Add(motor_grid)
         robot_grid.Add(robot_reporting_grid, flag=wx.ALIGN_CENTER)
+        button_grid.Add(self.keyboardinputbutton)
+        button_grid.Add(self.cpushutdownbutton)
         main_grid.Add(robot_grid)
-        main_grid.Add(self.keyboardinputbutton)
+        main_grid.Add(button_grid)
         main_grid.AddSpacer(10)
         main_grid.Add(self.logger)
         mainSizer.Add(main_grid, 0, wx.ALL, 5)
