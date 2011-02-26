@@ -9,6 +9,7 @@ import sys
 import re
 import pickle
 import mysettings
+import time
 
 import socketlib
 import crc16
@@ -193,9 +194,28 @@ handlers = {
 'rpmset': rpmset_handler,
 'status': status_handler}
 
+class RobotServer(socketlib.Server):
+
+    def __init__(self, host, port):
+        while True:
+            try:
+                socketlib.Server.__init__(self, host, port)
+                return
+            except:
+                print "Unable to bind to",host,port
+                time.sleep(1)
+                pass
+        
+            
+
+    def handle_error(self):
+        err = "Exception in UserConnection: " + str(sys.exc_info()[:2])
+        self.write(err)
+        print err
+
 
     
-robot_server = socketlib.Server(mysettings.ROBOTSERVER_HOST, ROBOTSERVER_PORT)
+robot_server = RobotServer(mysettings.ROBOTSERVER_HOST, ROBOTSERVER_PORT)
 robot_server.set_handler(UserConnection)
 robot_server.set_handler_args(robot_sock)
 
