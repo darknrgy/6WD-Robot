@@ -104,10 +104,10 @@ void motors_tick(){
 		rpm *= motor->dir;
 		
 		// avg the rpm delta
-        motor->rpm_delta = motor->rpm_delta * 0.65 + (rpm - motor->rpm_previous) * 0.35;		
+        motor->rpm_delta = motor->rpm_delta * (1.0 - globals(2))  + (rpm - motor->rpm_previous) * globals(2);		
 		
 		// determine the pwm acceleration rate
-        pwm_acc = ((float) rpm_buffer - rpm) * 0.015 - motor->rpm_delta * 0.15;
+        pwm_acc = ((float) rpm_buffer - rpm) * globals(0) - motor->rpm_delta * globals(1);
 		
 		motor->pwm =  motor->pwm + pwm_acc;
 		if (motor->pwm > MOTOR_PWM_MAX) motor->pwm = MOTOR_PWM_MAX;

@@ -24,6 +24,7 @@
 #include "../../lib/analoginput.h"
 
 // application includes
+#include "globals.h"
 #include "commands.h"
 #include "motors.h"
 
