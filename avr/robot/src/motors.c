@@ -110,8 +110,8 @@ void motors_tick(){
         pwm_acc = ((float) rpm_buffer - rpm) * globals(0) - motor->rpm_delta * globals(1);
 		
 		motor->pwm =  motor->pwm + pwm_acc;
-		if (motor->pwm > MOTOR_PWM_MAX) motor->pwm = MOTOR_PWM_MAX;
-		if (motor->pwm < -MOTOR_PWM_MAX) motor->pwm = -MOTOR_PWM_MAX;
+		if (motor->pwm > globals(3) ) motor->pwm = globals(3);
+		if (motor->pwm < -globals(3)) motor->pwm = -globals(3);
 		
 		if (rpm_buffer == 0) motor->pwm = 0;
 		pwm_set(chan,floor(abs(motor->pwm)));

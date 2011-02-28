@@ -101,8 +101,7 @@ class RobotPanel(wx.Panel):
         self.cli = wx.StaticText(self, label="Command Line Interface")
         self.cli_field = wx.TextCtrl(self, size=(300,-1), style = wx.TE_PROCESS_ENTER)
         self.Bind(wx.EVT_TEXT_ENTER, self.OnCLISubmit, self.cli_field)
-        
-        #wx.EVT_TEXT_ENTER(self.cli_field, self.OnCLISubmit)
+
 
         # wxTimer events
         self.poller = wx.Timer(self, wx.NewId())
@@ -139,6 +138,9 @@ class RobotPanel(wx.Panel):
     
     def onKeyUp(self, event):
         key = event.GetKeyCode()
+        if key == wx.WXK_RETURN:
+            self.cli_field.SetFocus()
+            return
         self.keypress[key] = 0
         
     def OnCLISubmit(self, event):
@@ -146,7 +148,7 @@ class RobotPanel(wx.Panel):
         if self.proxy_connection == False:
             self.logger.AppendText("Not connected to Robot Server, connect first")
             return
-        print self.cli_field.GetValue()
+        self.logger.AppendText("CMD Sent: " + str(self.cli_field.GetValue()) + "\n")
         self.proxy_connection.write(str(self.cli_field.GetValue()))
         self.cli_field.Clear()
     

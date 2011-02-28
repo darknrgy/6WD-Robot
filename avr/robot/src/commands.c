@@ -11,6 +11,7 @@ void handle_packet(Packet packet){
 		case CMD_PWM_SET:			cmd_pwm_set(params); break;
 		case CMD_PWM_SETSCALAR:		cmd_pwm_setscalar(params); break;
 		case CMD_RPMSET		:		cmd_rpmset(params); break;
+		case CMD_SET		:		cmd_set(params); break;
 		default: 					Packets_sendError(ERROR_INVALIDCMD, 0x00);			
 
 	}
@@ -44,9 +45,14 @@ void cmd_rpmset(char* params){
 void cmd_set(char* params){
 	
 	uint8_t name = (uint8_t) params[0];
+	if (name == 100){
+		globals_init();
+		return;
+	}
 	float value;
 	memcpy(&value, &params[1], 4);
 	globals_set(name, value);
+	cmd_send_debug16('W', (uint16_t) ( (float) value * 1000.0));
 	cmd_ackset(name);
 
 }

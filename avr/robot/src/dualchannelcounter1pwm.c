@@ -29,6 +29,9 @@ int main( void ){
 	Queue* packets;
 	packets = Packets_getQueue();
 
+	// initialize globals 
+	globals_init();
+
 	// initialize Time
 	time_init();
 	TimeResult tr;
