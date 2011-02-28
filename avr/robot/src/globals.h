@@ -4,5 +4,6 @@
 #include "includes.h"
 
 float globals(uint8_t id);
+void globals_set(uint8_t id, float value);
 
 #endif // #ifndef GLOBALS_H

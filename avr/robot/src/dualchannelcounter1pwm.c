@@ -18,6 +18,7 @@ void send_status();
 
 int main( void ){
 
+
 	DDRC = 0xDB;
 	//PORTC = 0x7E;;
 	PORTC = 0xE7;

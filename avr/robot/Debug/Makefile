@@ -15,7 +15,7 @@ COMMON = -mmcu=$(MCU)
 
 ## Compile options common for all C compilation units.
 CFLAGS = $(COMMON)
-CFLAGS += -Wall -gdwarf-2 -std=gnu99 -DAVRSIM=1 -DBAUD=57600       -DSIMPLEPROTOCOL_DEVICEADDRESS=0x01                                            -DF_CPU=16000000UL -O0 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
+CFLAGS += -Wall -gdwarf-2 -std=gnu99 -DAVRSIM=1 -DBAUD=57600       -DSIMPLEPROTOCOL_DEVICEADDRESS=0x01                                               -DF_CPU=16000000UL -O0 -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums
 CFLAGS += -MD -MP -MT $(*F).o -MF dep/$(@F).d 
 
 ## Assembly specific flags
@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = usart.o packets.o queue.o crc16.o pwm.o time.o commands.o dualchannelcounter1pwm.o motors.o 
+OBJECTS = commands.o dualchannelcounter1pwm.o motors.o analoginput.o crc16.o packets.o pwm.o queue.o time.o usart.o globals.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -46,24 +46,6 @@ LINKONLYOBJECTS =
 all: $(TARGET) DualChannelCounter1PWM.hex DualChannelCounter1PWM.eep DualChannelCounter1PWM.lss size
 
 ## Compile
-usart.o: ../../lib/src/usart.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-packets.o: ../../lib/src/packets.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-queue.o: ../../lib/src/queue.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-crc16.o: ../../lib/src/crc16.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-pwm.o: ../../lib/src/pwm.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
-time.o: ../../lib/src/time.c
-	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
-
 commands.o: ../src/commands.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
@@ -71,6 +53,30 @@ dualchannelcounter1pwm.o: ../src/dualchannelcounter1pwm.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 motors.o: ../src/motors.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+analoginput.o: ../../lib/src/analoginput.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+crc16.o: ../../lib/src/crc16.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+packets.o: ../../lib/src/packets.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+pwm.o: ../../lib/src/pwm.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+queue.o: ../../lib/src/queue.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+time.o: ../../lib/src/time.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+usart.o: ../../lib/src/usart.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+globals.o: ../src/globals.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link

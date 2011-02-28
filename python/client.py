@@ -187,9 +187,12 @@ class RobotPanel(wx.Panel):
         self.fields['RPM(Meas)']['left'].SetValue(format_RPM(fields['L'][0]))
         self.fields['POWER']['left'].SetValue(format_Watts(fields['L'][1]))
         self.fields['PWM']['left'].SetValue(format_PWM(fields['L'][2]))
+        
         self.fields['RPM(Meas)']['right'].SetValue(format_RPM(fields['R'][0]))
         self.fields['POWER']['right'].SetValue(format_Watts(fields['R'][1]))
         self.fields['PWM']['right'].SetValue(format_PWM(fields['R'][2]))
+        
+        
         self.fields['RPM(Targ)']['left'].SetValue(format_RPM(abs(int(self.leftThrottle.GetValue()) * 100)))
         self.fields['RPM(Targ)']['right'].SetValue(format_RPM(abs(int(self.rightThrottle.GetValue()) * 100)))
         self.fields['BATT VOLTS']['value'].SetValue(format_voltage(fields['M'][0]))

@@ -41,6 +41,15 @@ void cmd_rpmset(char* params){
 	motors_set(MOTORS_RIGHT, right);
 }
 
+void cmd_set(char* params){
+	
+	uint8_t name = (uint8_t) params[0];
+	float value;
+	memcpy(&value, &params[1], 4);
+	globals_set(name, value);
+
+}
+
 uint16_t* get_rpm_handle(){
 	static uint16_t rpm;
 	return &rpm;

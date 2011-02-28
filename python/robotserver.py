@@ -27,7 +27,8 @@ cmds = {
 'invalid_cmd':      "\x03", 
 'debug':            "\x30",
 'echo':             "\x31",
-'status':           "\x32"}
+'status':           "\x32",
+'set':              "\x33"}
 
 robot_status = {}
 
@@ -60,13 +61,13 @@ class RobotConnection(socketlib.Socket):
         
                 
     def handle_request(self, req):
-        
         if len(req) < 3: return
         self.last_update = time.time()
         data = req[0:-2]
         checksum = struct.unpack(">H", req[-2:])[0]
         if crc16.crc16(data) != checksum:
             translated = "CHECKSUM MISMATCH: " + repr(req)
+            print "CHECKSUM MISMATCH"
             return
         if req[1] == cmds.get('debug') :
             debug_handler(data)
@@ -205,12 +206,17 @@ def status_handler(data):
     robot_status[data[0:1]] = params
     return False
 
-        
+def set_handler(args):
+    name = chr(int(args[0]))
+    value = struct.pack('<f', float(args[1].strip()))
+    print  repr(name + value)
+    return name + value
     
 handlers = {
 'rpm': rpm_handler,
 'rpmset': rpmset_handler,
-'status': status_handler}
+'status': status_handler,
+'set': set_handler}
 
 class RobotServer(socketlib.Server):
 
