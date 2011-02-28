@@ -28,7 +28,8 @@ cmds = {
 'debug':            "\x30",
 'echo':             "\x31",
 'status':           "\x32",
-'set':              "\x33"}
+'set':              "\x33",
+'ack_set'           "\x34"}
 
 robot_status = {}
 

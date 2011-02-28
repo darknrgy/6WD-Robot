@@ -11,6 +11,7 @@
 #define CMD_RPMSET			0x21
 #define CMD_DEBUG16			0x30
 #define CMD_SENDSTATUS		0x32
+#define CMD_ACKSET			0x34
 
 // ADC Channels
 #define MOTORDRIVER_TEMP	0x02

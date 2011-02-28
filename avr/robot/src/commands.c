@@ -47,6 +47,7 @@ void cmd_set(char* params){
 	float value;
 	memcpy(&value, &params[1], 4);
 	globals_set(name, value);
+	cmd_ackset(name);
 
 }
 
@@ -91,6 +92,14 @@ void cmd_sendstatus(char id, uint16_t v1, uint16_t v2, uint16_t v3){
 	packet.length = 8;
 	Packets_send(packet);
 
+}
+
+void cmd_ackset(char id){
+	Packet packet;
+	packet.data[0] = CMD_ACKSET;
+	packet.data[1] = id;
+	packet.length = 2;
+	Packets_send(packet);
 }
 
 void cmd_get_rpm(){
