@@ -91,7 +91,7 @@ class RobotPanel(wx.Panel):
         
         # CPU Shutdown button
         self.cpushutdownbutton = wx.Button(self, label="CPU Shutdown")
-        wx.EVT_SET_FOCUS(self.cpushutdownbutton, self.keepKeyboardInputFocus)
+        self.Bind(wx.EVT_BUTTON, self.OnCPUShutdown,self.cpushutdownbutton)
         
         # Logging panel
         self.logger = wx.TextCtrl(self, size=(300,300), style=wx.TE_MULTILINE | wx.TE_READONLY)
@@ -151,6 +151,11 @@ class RobotPanel(wx.Panel):
         self.logger.AppendText("CMD Sent: " + str(self.cli_field.GetValue()) + "\n")
         self.proxy_connection.write(str(self.cli_field.GetValue()))
         self.cli_field.Clear()
+        
+    def OnCPUShutdown(self, event):
+        self.proxy_connection.write(str("cpu_shutdown"))
+        self.keyboardinputbutton.SetFocus();
+        
     
     def OnPoll(self, event):       
 

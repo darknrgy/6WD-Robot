@@ -10,6 +10,8 @@ import re
 import pickle
 import mysettings
 import time
+import shlex
+import subprocess
 
 import socketlib
 import crc16
@@ -36,6 +38,16 @@ robot_status = {}
 cmds_invert = dict()
 for k,v in cmds.iteritems():
     cmds_invert[v] = k
+
+def shell_cmd(cmd, throw_exception = True):
+
+    cmd = cmd.encode('utf-8')
+    proc = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = proc.communicate()
+    if throw_exception and proc.returncode:
+        print "ERROR: Please addresss the following issue and try again: " + error.rstrip()
+        sys.exit(1)
+    return dict(output = output, error = error, errcode = proc.returncode)
 
 
 class RobotConnection(socketlib.Socket):
@@ -113,7 +125,8 @@ class UserConnection(socketlib.Socket):
 		self.close()
             	return    
         
-        if (req == 'get_status'): return self.write("robot_status" + pickle.dumps(robot_status))                   
+        if (req == 'get_status'): return self.write("robot_status" + pickle.dumps(robot_status))    
+        if (req == 'cpu_shutdown'): return shell_cmd("sudo shutdown -h now")
         self.robot_sock[0].write(req)       
         
         
