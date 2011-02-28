@@ -29,7 +29,7 @@ cmds = {
 'echo':             "\x31",
 'status':           "\x32",
 'set':              "\x33",
-'ack_set'           "\x34"}
+'ack_set':          "\x34"}
 
 robot_status = {}
 
@@ -208,7 +208,9 @@ def status_handler(data):
     return False
 
 def set_handler(args):
+    name = args[0].strip()
     name = chr(int(args[0]))
+    if name == "\x64": return name    
     value = struct.pack('<f', float(args[1].strip()))
     print  repr(name + value)
     return name + value
