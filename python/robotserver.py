@@ -127,8 +127,8 @@ class UserConnection(socketlib.Socket):
         
         if (req == 'get_status'): return self.write("robot_status" + pickle.dumps(robot_status))    
         if (req == 'cpu_shutdown'): 
-            shell_cmd("sudo shutdown -h -t 5")
-            self.write("BLACKWATER SHUTDOWN: 5 seconds")
+            self.write("Main CPU Shutdown...")
+            shell_cmd("sudo shutdown -h now")
             return
         self.robot_sock[0].write(req)       
         
