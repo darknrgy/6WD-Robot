@@ -235,10 +235,11 @@ class ThrottleControl:
                             ',': self.decelerate,
                             ' ': self.fullstop
                             }
+        self.THROTTLE_INCREMENT = 2
         self.throttle = {'left': 0.0, 'right': 0.0}
     def turnleft(self):
-        self.throttle['left'] -= 1
-        self.throttle['right'] += 1
+        self.throttle['left'] -= self.THROTTLE_INCREMENT
+        self.throttle['right'] += self.THROTTLE_INCREMENT
         self.validate()    
     def center(self):
         center = (self.throttle['left'] + self.throttle['right']) / 2
@@ -246,20 +247,20 @@ class ThrottleControl:
         self.throttle['right'] = center     
         self.validate()    
     def turnright(self):
-        self.throttle['left'] += 1
-        self.throttle['right'] -= 1
+        self.throttle['left'] += self.THROTTLE_INCREMENT
+        self.throttle['right'] -= self.THROTTLE_INCREMENT
         self.validate()   
     def accelerate(self):
-        self.throttle['left'] += 1
-        self.throttle['right'] += 1
+        self.throttle['left'] += self.THROTTLE_INCREMENT
+        self.throttle['right'] += self.THROTTLE_INCREMENT
         self.validate()
     def sit(self):
         center = (self.throttle['left'] + self.throttle['right']) / 2
         self.throttle['left'] -= center
         self.throttle['right'] -= center               
     def decelerate(self):
-        self.throttle['left'] -= 1
-        self.throttle['right'] -= 1
+        self.throttle['left'] -= self.THROTTLE_INCREMENT
+        self.throttle['right'] -= self.THROTTLE_INCREMENT
         self.validate()
     def fullstop(self):
         self.throttle['left'] = 0
