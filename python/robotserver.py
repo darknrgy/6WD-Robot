@@ -241,10 +241,10 @@ class RobotServer(socketlib.Server):
 
     def __init__(self, host, port):
         connected = False
-	while connected == False:
+        while connected == False:
             try:
                 socketlib.Server.__init__(self, host, port)
-		connected = True
+                connected = True
             except:
                 print "Unable to bind to",host,port
                 time.sleep(1)

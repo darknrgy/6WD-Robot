@@ -109,11 +109,11 @@ void send_status(){
 		right_motor_amps = right_motor_amps  * 0.98f + ( (float) analoginput_get(RIGHT_MOTOR_AMPS) /120.8 ) * 0.02f;
 
 		scalar ++;
-		if (scalar > 9) scalar = 0;
+		if (scalar > 50) scalar = 0;
 		
-		if (scalar == 3) cmd_sendstatus('L', (uint16_t) abs(motorL->rpm_measured),  (uint16_t) (left_motor_amps * battery_voltage),  (uint16_t) abs(motorL->pwm));
-		if (scalar == 6) cmd_sendstatus('R', (uint16_t) abs(motorR->rpm_measured),  (uint16_t) (right_motor_amps * battery_voltage),  (uint16_t) abs(motorR->pwm));
-		if (scalar == 9) cmd_sendstatus('M', (uint16_t) battery_voltage, 0,0);
+		if (scalar == 10) cmd_sendstatus('L', (uint16_t) abs(motorL->rpm_measured),  (uint16_t) (left_motor_amps * battery_voltage),  (uint16_t) abs(motorL->pwm));
+		if (scalar == 20) cmd_sendstatus('R', (uint16_t) abs(motorR->rpm_measured),  (uint16_t) (right_motor_amps * battery_voltage),  (uint16_t) abs(motorR->pwm));
+		if (scalar == 30) cmd_sendstatus('M', (uint16_t) battery_voltage, 0,0);
 		
 }
 
